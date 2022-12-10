@@ -13,27 +13,12 @@
 #      msg: / does not have the minimum space required to continue (3Gb requested). 
 #    when: root_freespace.stdout|float is lt 3000000
 
-#  - name: Get size of /
-#    shell: "df --block-size 1m / --output=size | tail -1"
-#    register: shell_df_result
-#
-#  - name: Set facts
-#    set_fact:
-#    root_tmpfs_size_mb: "{{ shell_df_result.stdout | int }}"
-#
-# - debug: var=root_tmpfs_size_mb
+  - name: Get size of /
+    shell: "df --block-size 1m / --output=size | tail -1"
+    register: shell_df_result
 
-  - name: Check disk space
-    vars:
-     mount_all: []
-    tasks:
+  - name: Set facts
+    set_fact:
+    root_tmpfs_size_mb: "{{ shell_df_result.stdout | int }}"
 
-    # Get List of device
-    - set_fact:
-        mount_all: "{{ mount_all + [{'host':ansible_host,'dev':item.device,'mount':item.mount,'free':(((item.size_available/1024)/1024)/1024)|round(2,'common'),'total':(((item.size_total/1024)/1024)/1024)|round(2,'common')}] }}"
-      when: (item.size_total - item.size_available) > (item.size_total|float * 0.85)
-      with_items: "{{ ansible_mounts | list }}"
-
-    - name: Stato dei dischi > 85%
-      debug:
-         msg: "{{ mount_all }} "
+ - debug: var=root_tmpfs_size_mb
