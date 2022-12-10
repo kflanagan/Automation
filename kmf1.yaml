@@ -6,7 +6,6 @@
       name: autofs.service
       state: started
   - name: Check Disk Space Usage
-    hosts: Linux
     tasks:
             - name: Disk usage from command module
               command: df -h
