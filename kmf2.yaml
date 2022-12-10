@@ -1,8 +1,8 @@
 - name: Check Disk Space Usage
-  hosts: Linux
+  hosts: pavillion
   tasks:
-  - name: Disk usage from command module
-    command: df -h
-    register: space
-  - debug:
-          var: space
+          - name: Disk usage from command module
+            command: df -h
+            register: space
+          - debug:
+                  var: space.stdout_lines
