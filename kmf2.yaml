@@ -1,4 +1,3 @@
-
 - name: Ensure that free space on the tested volume is greater than 15%
   hosts: pavillion
   assert:
