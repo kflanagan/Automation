@@ -9,8 +9,8 @@
     shell: df / --output\=avail | tail -1
     register: root_freespace
   - fail:
-    msg: / does not have the minimum space required to continue (3Gb requested).
-    when: root_freespace.stdout|float is lt 3000000
+      msg: / does not have the minimum space required to continue (3Gb requested).
+      when: root_freespace.stdout|float is lt 3000000
 
     #- name: Get size of /
     # shell: "df --block-size 1m / --output=size | tail -1"
