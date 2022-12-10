@@ -21,4 +21,4 @@
     set_fact:
     root_tmpfs_size_mb: "{{ shell_df_result.stdout | int }}"
 
- - debug: var=root_tmpfs_size_mb
+  - debug: var=root_tmpfs_size_mb
