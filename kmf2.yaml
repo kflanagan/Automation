@@ -1,8 +1,11 @@
-- name: Check Disk Space Usage
+
+- name: Ensure that free space on the tested volume is greater than 15%
   hosts: pavillion
-  tasks:
-          - name: Disk usage from command module
-            command: df -h
-            register: space
-          - debug:
-                  var: space.stdout_lines
+  assert:
+    that:
+      - mount.size_available > mount.size_total|float * 0.15
+    msg: Disk space has reached 85% threshold
+  vars:
+    mount: "{{ ansible_mounts | selectattr('mount','equalto',item.mount) | list | first }}"
+  with_items:
+    - "{{ ansible_mounts }}"
