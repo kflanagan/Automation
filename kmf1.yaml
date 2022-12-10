@@ -5,11 +5,11 @@
     ansible.builtin.service:
       name: autofs.service
       state: started
-- name: Check Disk Space Usage
-  hosts: Linux
-  tasks:
-          - name: Disk usage from command module
-            command: df -h
-            register: space
-          - debug:
-                  var: space
+  - name: Check Disk Space Usage
+    hosts: Linux
+    tasks:
+            - name: Disk usage from command module
+              command: df -h
+              register: space
+            - debug:
+                    var: space
