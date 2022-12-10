@@ -7,8 +7,8 @@
       state: started
   - name: Check Disk Space Usage
     tasks:
-            - name: Disk usage from command module
-              command: df -h
-              register: space
-            - debug:
-                    var: space
+      - name: Disk usage from command module
+        command: df -h
+        register: space
+      - debug:
+              var: space
