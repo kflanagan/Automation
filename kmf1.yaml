@@ -3,21 +3,21 @@
   tasks:
     - name: Check to see that autofs is started
       ansible.builtin.service:
-        name: autofs.service
-        state: started
-    #  - name: Check / freespace
-    #    shell: df / --output\=avail | tail -1
-    #    register: root_freespace
-    #  - fail:
-    #      msg: / does not have the minimum space required to continue (3Gb requested).
-    #    when: root_freespace.stdout|float is lt 3000000
+      name: autofs.service
+      state: started
+    - name: Check / freespace
+      shell: df / --output\=avail | tail -1
+      register: root_freespace
+    - fail:
+       msg: / does not have the minimum space required to continue (3Gb requested).
+       when: root_freespace.stdout|float is lt 3000000
 
-      - name: Get size of /
-        shell: "df --block-size 1m / --output=size | tail -1"
-        register: shell_df_result
+    #- name: Get size of /
+    # shell: "df --block-size 1m / --output=size | tail -1"
+    #  register: shell_df_result
 
-      - name: Set facts
-        set_fact:
-        root_tmpfs_size_mb: "{{ shell_df_result.stdout | int }}"
+    #- name: Set facts
+    #  set_fact:
+    #  root_tmpfs_size_mb: "{{ shell_df_result.stdout | int }}"
 
-      - debug: var=root_tmpfs_size_mb
+    #- debug: var=root_tmpfs_size_mb
