@@ -1,10 +1,14 @@
-- name: Ensure that free space on the tested volume is greater than 15%
-  hosts: pavillion
-  assert:
-    that:
-      - mount.size_available > mount.size_total|float * 0.15
-    msg: Disk space has reached 85% threshold
-  vars:
-    mount: "{{ ansible_mounts | selectattr('mount','equalto',item.mount) | list | first }}"
-  with_items:
-    - "{{ ansible_mounts }}"
+    - name: Test for 20% disk space available on {{ mountname }}
+      hosts: Pavillion
+      assert:
+        that: mount.size_available > mount.size_total|float * 0.2
+        msg: Disk space has reached the 80% threshold
+      register: disk_free
+
+    - name: For full systems, run splunk clean
+      command: "df"
+      when: disk_free|failed
+
+      vars:
+        mountname: '/'
+        mount: "{{ ansible_mounts | selectattr('mount','equalto', mountname) | first }}"
