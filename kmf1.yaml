@@ -3,4 +3,5 @@
   
   tasks:
   - name: autofs.service
+    ansible.builtin.service:
     state: started
