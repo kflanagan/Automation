@@ -4,5 +4,5 @@
   tasks:
   - name: check to see that autofs is started
     ansible.builtin.service:
-    name: autofs.service
-    state: started
+      name: autofs.service
+      state: started
