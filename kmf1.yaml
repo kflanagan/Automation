@@ -23,7 +23,7 @@
 #
 # - debug: var=root_tmpfs_size_mb
 
-  - name: Check VM Infrastrutturali
+  - name: Check disk space
     hosts: all
     vars:
      mount_all: []
