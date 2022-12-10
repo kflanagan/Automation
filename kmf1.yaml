@@ -1,8 +1,8 @@
 - name: Kevin Test 1
   hosts: pavillion.flanagannc.net
-  
   tasks:
   - name: check to see that autofs is started
     ansible.builtin.service:
       name: autofs.service
       state: started
+      
