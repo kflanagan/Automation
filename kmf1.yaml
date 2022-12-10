@@ -16,6 +16,7 @@
   - name: Get size of /
     shell: "df --block-size 1m / --output=size | tail -1"
     register: shell_df_result
+
   - name: Set facts
     set_fact:
     root_tmpfs_size_mb: "{{ shell_df_result.stdout | int }}"
