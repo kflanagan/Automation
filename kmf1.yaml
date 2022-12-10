@@ -5,15 +5,15 @@
     ansible.builtin.service:
       name: autofs.service
       state: started
-- name: Get size of /
-  shell: "df --block-size 1m / --output=size | tail -1"
-  register: shell_df_result
+  - name: Get size of /
+    shell: "df --block-size 1m / --output=size | tail -1"
+    register: shell_df_result
 
-- name: Set facts
-  set_fact:
-    run_tmpfs_size_mb: "{{ shell_df_result.stdout | int }}"
+  - name: Set facts
+    set_fact:
+      run_tmpfs_size_mb: "{{ shell_df_result.stdout | int }}"
 
-- debug: var=root_tmpfs_size_mb
+  - debug: var=root_tmpfs_size_mb
     #- name: Get size of /
     # shell: "df --block-size 1m / --output=size | tail -1"
     #  register: shell_df_result
