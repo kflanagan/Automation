@@ -1,0 +1,8 @@
+- name: Check Disk Space Usage
+  hosts: Linux
+  tasks:
+          - name: Disk usage from command module
+            command: df -h
+            register: space
+          - debug:
+                  var: space
