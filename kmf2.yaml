@@ -44,7 +44,7 @@
       #    group: root       
       #    mode: 0644
       #    follow: yes
-    - name: autofs.conf 
+    - name: autofs.conf
       become: true
       copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/autofs.conf
@@ -54,7 +54,7 @@
         mode: 0644
         follow: yes
     - name: auto.master
-      become: true  
+      become: true
       copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.master
         dest: /backups/auto.master
@@ -72,7 +72,7 @@
         mode: 0644
         follow: yes
     - name: auto.smb
-      become: true  
+      become: true
       copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.smb
         dest: /backups/auto.smb
