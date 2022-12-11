@@ -58,10 +58,10 @@
 
 # Gathers facts for the machines in the dbservers group (a.k.a Delegating facts)
 - name: Gather info
-  hosts: pavillion
+  hosts: Linux
   tasks:
     - name: Gather facts from server
       ansible.builtin.setup:
       delegate_to: "{{ item }}"
       delegate_facts: true
-#      loop: "{{ groups['dbservers'] }}"
+      loop: "{{ groups['Linux'] }}"
