@@ -32,33 +32,69 @@
       #    mode: '0755'
 
 # This will copy the whole directory
-#  - name: Ansible Copy Example Local to Remote
-#    hosts: pavillion
-#    tasks:
-#      - name: copying files with playbook
-#        become: true
-#        copy:
-#          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
-#          dest: /backups
-#          owner: root
-#          group: root       
-#          mode: 0644
-
-  - name: Copy rundeck files
+  - name: Ansible Copy Example Local to Remote
     hosts: pavillion
     tasks:
-    - name: C
-      become: true
-      ansible.builtin.copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
-      owner: root
-      group: root       
-      mode: 0644
-      with_items:
-        - autofs.conf
-        - auto.master
-        - auto.nfs
-        - auto.smb
-        - nfs.conf
+      - name: Copy config files 
+        become: true
+      # copy:
+      #    src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
+      #    dest: /backups
+      #    owner: root
+      #    group: root       
+      #    mode: 0644
+      #    follow: yes
+      - name: autofs.conf 
+        become: true
+        copy:
+          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/autofs.conf
+          dest: /backups/autofs.conf
+          owner: root
+          group: root       
+          mode: 0644
+          follow: yes
+      - name: auto.master
+        become: true  
+        copy:
+          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.master
+          dest: /backups/auto.master
+          owner: root
+          group: root       
+          mode: 0644
+          follow: yes
+      - name: auto.nfs
+        become: true
+        copy:
+          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.nfs
+          dest: /backups/auto.nfs
+          owner: root
+          group: root       
+          mode: 0644
+          follow: yes
+      - name: auto.smb
+        become: true  
+        copy:
+          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.smb
+          dest: /backups/auto.smb
+          owner: root
+          group: root       
+          mode: 0644
+          follow: yes
+      - name: nfs.conf
+        become: true
+        copy:
+          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/nfs.conf
+          dest: /backups/nfs.conf
+          owner: root
+          group: root       
+          mode: 0644
+          follow: yes
+
+
+
+
+
+
 
 
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
