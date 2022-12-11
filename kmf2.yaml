@@ -44,15 +44,15 @@
 #          group: root        
 #          mode: 0644
 
-  - name: copy rundeck files
-    become: true
-    copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
-    with_items:
-      - autofs.conf
-      - auto.master
-      - auto.nfs
-      - auto.smb
-      - nfs.conf
+    - name: copy rundeck files
+      become: true
+      copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
+      with_items:
+        - autofs.conf
+        - auto.master
+        - auto.nfs
+        - auto.smb
+        - nfs.conf
 
 
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
