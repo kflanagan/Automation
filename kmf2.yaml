@@ -2,9 +2,9 @@
   hosts: pavillion
 #  connection: local
  # gather_facts: no
- # vars:
- #   ism:
- #     host: "{{ ansible_ssh_host }}"
+  vars:
+    ism:
+      host: "{{ pi }}"
  #     username: "{{ username }}"
  #     password: "{{ password }}"
 
