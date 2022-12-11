@@ -10,6 +10,6 @@
 
   tasks:
 
-  - name: "Get hard disk information"
-    inspur.ispim.hard_disk_info:
-      provider: "{{ ism }}"
+    - name: "Get hard disk information"
+      inspur.ispim.hard_disk_info:
+        provider: "{{ ism }}"
