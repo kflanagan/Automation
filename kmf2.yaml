@@ -1,14 +1,15 @@
-- name: Test for 20% disk space available on {{ mountname }}
-  hosts: Pavillion
-  assert:
-    that: mount.size_available > mount.size_total|float * 0.2
-    msg: Disk space has reached the 80% threshold
-  register: disk_free
+- name: Hard disk test
+  hosts: pavillion
+#  connection: local
+  gather_facts: no
+ # vars:
+ #   ism:
+ #     host: "{{ ansible_ssh_host }}"
+ #     username: "{{ username }}"
+ #     password: "{{ password }}"
 
-- name: For full systems, run splunk clean
-  command: "df"
-  when: disk_free|failed
+  tasks:
 
-  vars:
-    mountname: '/'
-    mount: "{{ ansible_mounts | selectattr('mount','equalto', mountname) | first }}"
+  - name: "Get hard disk information"
+    inspur.ispim.hard_disk_info:
+      provider: "{{ ism }}"
