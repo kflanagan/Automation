@@ -32,7 +32,7 @@
       #    mode: '0755'
 
       - name: Copy file with owner and permissions
-        hosts: pavillion
+
         ansible.builtin.copy:
           src: ../Linux-DesktopStuff/NFS/autofs.conf
           dest: /backups/autofs.conf
