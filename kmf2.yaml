@@ -32,7 +32,6 @@
       #    mode: '0755'
 
       - name: Copy file with owner and permissions
-
         ansible.builtin.copy:
             src: ../Linux-DesktopStuff/NFS/autofs.conf
             dest: /backups/autofs.conf
@@ -41,7 +40,6 @@
             mode: '644'
 
       - name: Copy file with owner and permissions
-       
         ansible.builtin.copy:
             src: ../Linux-DesktopStuff/NFS/autofs.conf
             dest: /backups/autofs.conf
@@ -50,7 +48,6 @@
             mode: '644'
 
       - name: Copy file with owner and permissions
-        
         ansible.builtin.copy:
             src: ../Linux-DesktopStuff/NFS/auto.master
             dest: /backups/auto.master
@@ -59,7 +56,6 @@
             mode: '644'
 
       - name: Copy file with owner and permissions
-          
         ansible.builtin.copy:
             src: ../Linux-DesktopStuff/NFS/auto.nfs
             dest: /backups/auto.nfs
@@ -68,16 +64,13 @@
             mode: '644'   
 
       - name: Copy file with owner and permissions
-          
         ansible.builtin.copy:
             src: ../Linux-DesktopStuff/NFS/auto.smb
             dest: /backups/auto.smb
             owner: root
             group: root
             mode: '644'
-
       - name: Copy file with owner and permissions
-         
         ansible.builtin.copy:
             src: ../Linux-DesktopStuff/NFS/nfs.conf
             dest: /backups/nfs.conf
