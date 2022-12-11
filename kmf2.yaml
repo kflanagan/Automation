@@ -49,7 +49,7 @@
       become: true
       tasks:
         - name: copyem
-          copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
+          ansible.bultin.copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
           with_items:
             - autofs.conf
             - auto.master
