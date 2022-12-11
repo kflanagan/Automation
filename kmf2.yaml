@@ -24,12 +24,12 @@
   hosts: pavillion
   tasks:
 
-      - name: Create a directory if it does not exist
-        hosts: pavillion
-        ansible.builtin.file:
-          path: /backups
-          state: directory
-          mode: '0755'
+      #- name: Create a directory if it does not exist
+      #  hosts: pavillion
+      #  ansible.builtin.file:
+      #    path: /backups
+      #    state: directory
+      #    mode: '0755'
 
       - name: Copy file with owner and permissions
         hosts: pavillion
