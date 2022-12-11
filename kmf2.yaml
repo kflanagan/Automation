@@ -20,9 +20,9 @@
 #      delegate_to: "{{ item }}"
 #      delegate_facts: true
 #      loop: "{{ groups['Linux'] }}"
-- name: Do NFS setup
-  hosts: pavillion
-  tasks:
+# - name: Do NFS setup
+#  hosts: pavillion
+#  tasks:
 
       # - name: Create a directory if it does not exist
       #  hosts: pavillion
@@ -31,53 +31,19 @@
       #    state: directory
       #    mode: '0755'
 
-      - name: Copy file with owner and permissions
-        ansible.builtin.copy:
-            src: ../Linux-DesktopStuff/NFS/autofs.conf
-            dest: /backups/autofs.conf
-            owner: root
-            group: root
-            mode: '644'
-            become: true
 
-      - name: Copy file with owner and permissions
-        ansible.builtin.copy:
-            src: ../Linux-DesktopStuff/NFS/autofs.conf
-            dest: /backups/autofs.conf
-            owner: root
-            group: root
-            mode: '644'
+  - name: Ansible Copy Example Local to Remote
+    hosts: pavillion
+    tasks:
+      - name: copying file with playbook
+        become: true 
+        copy:
+          src: ../Linux-DesktopStuff/NFS/autofs.conf
+          dest: /backups
+          owner: root
+          group: root        
+          mode: 0644
 
-      - name: Copy file with owner and permissions
-        ansible.builtin.copy:
-            src: ../Linux-DesktopStuff/NFS/auto.master
-            dest: /backups/auto.master
-            owner: root
-            group: root
-            mode: '644'
-
-      - name: Copy file with owner and permissions
-        ansible.builtin.copy:
-            src: ../Linux-DesktopStuff/NFS/auto.nfs
-            dest: /backups/auto.nfs
-            owner: root
-            group: root
-            mode: '644'
-
-      - name: Copy file with owner and permissions
-        ansible.builtin.copy:
-            src: ../Linux-DesktopStuff/NFS/auto.smb
-            dest: /backups/auto.smb
-            owner: root
-            group: root
-            mode: '644'
-      - name: Copy file with owner and permissions
-        ansible.builtin.copy:
-            src: ../Linux-DesktopStuff/NFS/nfs.conf
-            dest: /backups/nfs.conf
-            owner: root
-            group: root
-            mode: '644'
 # autofs.conf
 # auto.master
 # auto.nfs
