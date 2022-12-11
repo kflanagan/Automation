@@ -57,6 +57,7 @@
 # ansible windows -m ansible.builtin.setup -a "fact_path='c:\custom_facts'"
 
 # Gathers facts for the machines in the dbservers group (a.k.a Delegating facts)
+- name: Gather info
 - hosts: pavillion
   tasks:
     - name: Gather facts from server
