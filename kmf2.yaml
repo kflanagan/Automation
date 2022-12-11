@@ -31,18 +31,32 @@
       #    state: directory
       #    mode: '0755'
 
+# This will copy the whole directory
+#  - name: Ansible Copy Example Local to Remote
+#    hosts: pavillion
+#    tasks:
+#      - name: copying files with playbook
+#        become: true 
+#        copy:
+#          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
+#          dest: /backups
+#          owner: root
+#          group: root        
+#          mode: 0644
 
-  - name: Ansible Copy Example Local to Remote
-    hosts: pavillion
-    tasks:
-      - name: copying files with playbook
-        become: true 
-        copy:
-          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
-          dest: /backups
-          owner: root
-          group: root        
-          mode: 0644
+
+    -name: copying multiple files to one destinations
+    copy:
+        src: {{ item.src }}
+        dest: {{ item.dest }}
+        owner: root
+        group: root
+        mode: u=rw, g=rw, o=r
+    with-items:
+      -{ src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/autofs.conf, dest: /backups/ }
+      -{ src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.master, dest: /backups/ }
+      -{ src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.nfs, dest: /backups/ }
+      -{ src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.smb, dest: /backups/ }
 
 
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
