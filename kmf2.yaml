@@ -36,20 +36,23 @@
 #    hosts: pavillion
 #    tasks:
 #      - name: copying files with playbook
-#        become: true 
+#        become: true
 #        copy:
 #          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
 #          dest: /backups
 #          owner: root
-#          group: root        
+#          group: root       
 #          mode: 0644
 
-  - name: copy rundeck files
+  - name: Copy rundeck files
     hosts: pavillion
     tasks:
-      - name: c
+      - name: C
         become: true
-        copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
+        ansible.builtin.copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
+        owner: root
+        group: root       
+        mode: 0644
         with_items:
           - autofs.conf
           - auto.master
