@@ -38,6 +38,8 @@
             owner: root
             group: root
             mode: '644'
+            become: true
+            become_user: root
 
       - name: Copy file with owner and permissions
         ansible.builtin.copy:
