@@ -4,9 +4,9 @@
   gather_facts: true
   vars:
     ism:
-      host: pi
- #     username: "{{ username }}"
- #     password: "{{ password }}"
+      host: "{{ ansible_ssh_host }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
 
   tasks:
 
