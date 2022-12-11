@@ -46,7 +46,9 @@
 
 
     -name: copying multiple files to one destinations
+    hosts: pavillion
     copy:
+        become: true 
         src: {{ item.src }}
         dest: {{ item.dest }}
         owner: root
