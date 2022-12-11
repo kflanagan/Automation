@@ -85,8 +85,8 @@
           group: root
           mode: '644'
 
-#autofs.conf  
-#auto.master  
-#auto.nfs  
-#auto.smb  
-#nfs.conf
+# autofs.conf  
+# auto.master  
+# auto.nfs  
+# auto.smb  
+# nfs.conf
