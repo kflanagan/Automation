@@ -24,7 +24,7 @@
   hosts: pavillion
   tasks:
 
-      #- name: Create a directory if it does not exist
+      # - name: Create a directory if it does not exist
       #  hosts: pavillion
       #  ansible.builtin.file:
       #    path: /backups
@@ -34,56 +34,56 @@
       - name: Copy file with owner and permissions
 
         ansible.builtin.copy:
-          src: ../Linux-DesktopStuff/NFS/autofs.conf
-          dest: /backups/autofs.conf
-          owner: root
-          group: root
-          mode: '644'
+            src: ../Linux-DesktopStuff/NFS/autofs.conf
+            dest: /backups/autofs.conf
+            owner: root
+            group: root
+            mode: '644'
 
       - name: Copy file with owner and permissions
        
         ansible.builtin.copy:
-          src: ../Linux-DesktopStuff/NFS/autofs.conf
-          dest: /backups/autofs.conf
-          owner: root
-          group: root
-          mode: '644'
+            src: ../Linux-DesktopStuff/NFS/autofs.conf
+            dest: /backups/autofs.conf
+            owner: root
+            group: root
+            mode: '644'
 
       - name: Copy file with owner and permissions
         
         ansible.builtin.copy:
-          src: ../Linux-DesktopStuff/NFS/auto.master
-          dest: /backups/auto.master
-          owner: root
-          group: root
-          mode: '644'
+            src: ../Linux-DesktopStuff/NFS/auto.master
+            dest: /backups/auto.master
+            owner: root
+            group: root
+            mode: '644'
 
       - name: Copy file with owner and permissions
           
         ansible.builtin.copy:
-          src: ../Linux-DesktopStuff/NFS/auto.nfs
-          dest: /backups/auto.nfs
-          owner: root
-          group: root
-          mode: '644'   
+            src: ../Linux-DesktopStuff/NFS/auto.nfs
+            dest: /backups/auto.nfs
+            owner: root
+            group: root
+            mode: '644'   
 
       - name: Copy file with owner and permissions
           
         ansible.builtin.copy:
-          src: ../Linux-DesktopStuff/NFS/auto.smb
-          dest: /backups/auto.smb
-          owner: root
-          group: root
-          mode: '644'
+            src: ../Linux-DesktopStuff/NFS/auto.smb
+            dest: /backups/auto.smb
+            owner: root
+            group: root
+            mode: '644'
 
       - name: Copy file with owner and permissions
          
         ansible.builtin.copy:
-          src: ../Linux-DesktopStuff/NFS/nfs.conf
-          dest: /backups/nfs.conf
-          owner: root
-          group: root
-          mode: '644'
+            src: ../Linux-DesktopStuff/NFS/nfs.conf
+            dest: /backups/nfs.conf
+            owner: root
+            group: root
+            mode: '644'
 
 # autofs.conf  
 # auto.master  
