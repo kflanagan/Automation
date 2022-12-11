@@ -47,15 +47,13 @@
     - name: copy rundeck files
       hosts: pavillion
       become: true
-      tasks:
-        - name: copyem
-          ansible.bultin.copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
-          with_items:
-            - autofs.conf
-            - auto.master
-            - auto.nfs
-            - auto.smb
-            - nfs.conf
+      ansible.bultin.copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
+      with_items:
+        - autofs.conf
+        - auto.master
+        - auto.nfs
+        - auto.smb
+        - nfs.conf
 
 
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
