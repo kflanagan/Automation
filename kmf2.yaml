@@ -38,19 +38,12 @@
       - name: copying files with playbook
         become: true 
         copy:
-          src: "/home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto*.*"
+          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
           dest: /backups
           owner: root
           group: root        
           mode: 0644
-      - name: copying file with playbook
-        become: true 
-        copy:
-          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/nfs.conf
-          dest: /backups
-          owner: root
-          group: root        
-          mode: 0644
+
 
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
