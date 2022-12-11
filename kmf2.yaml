@@ -58,7 +58,7 @@
 
 # Gathers facts for the machines in the dbservers group (a.k.a Delegating facts)
 - name: Gather info
-- hosts: pavillion
+  hosts: pavillion
   tasks:
     - name: Gather facts from server
       ansible.builtin.setup:
