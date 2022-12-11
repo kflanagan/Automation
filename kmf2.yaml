@@ -21,12 +21,13 @@
 # Collect only facts returned by facter.
 # ansible all -m ansible.builtin.setup -a 'gather_subset=!all,facter'
 
-# - name: Collect only facts returned by facter
-#  ansible.builtin.setup:
-#    gather_subset:
-#      - '!all'
-#      - '!<any valid subset>'
-#      - facter
+- name: Collect only facts returned by facter
+  hosts: Linux
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - '!<any valid subset>'
+      - facter
 
 # - name: Collect only selected facts
 #  ansible.builtin.setup:
@@ -57,11 +58,12 @@
 # ansible windows -m ansible.builtin.setup -a "fact_path='c:\custom_facts'"
 
 # Gathers facts for the machines in the dbservers group (a.k.a Delegating facts)
-- name: Gather info
-  hosts: Linux
-  tasks:
-    - name: Gather facts from server
-      ansible.builtin.setup:
-      delegate_to: "{{ item }}"
-      delegate_facts: true
-      loop: "{{ groups['Linux'] }}"
+# This works now, but doesn't return much -- kf
+# - name: Gather info
+#  hosts: Linux
+#  tasks:
+#    - name: Gather facts from server
+#      ansible.builtin.setup:
+#      delegate_to: "{{ item }}"
+#      delegate_facts: true
+#      loop: "{{ groups['Linux'] }}"
