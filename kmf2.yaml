@@ -35,8 +35,8 @@
   - name: Ansible Copy Example Local to Remote
     hosts: pavillion
     tasks:
-      - name: Copy config files 
-        become: true
+      # - name: Copy config files 
+      #  become: true
       # copy:
       #    src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
       #    dest: /backups
