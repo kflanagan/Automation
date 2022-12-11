@@ -35,7 +35,7 @@
   - name: Ansible Copy Example Local to Remote
     hosts: pavillion
     tasks:
-      - name: copying file with playbook
+      - name: copying files with playbook
         become: true 
         copy:
           src: ../Linux-DesktopStuff/NFS/auto*.*
