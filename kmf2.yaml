@@ -21,19 +21,70 @@
 #      delegate_facts: true
 #      loop: "{{ groups['Linux'] }}"
 
-- hosts: pavillion
-#  connection: local
-  vars:
-    required_mounts:
-      - '/' #present
- #     - '/fakemount' #missing
- #     - '/mnt/wsl/docker-desktop-data/version-pack-data' #present
-  
 
-  tasks: get info
-    - set_fact:
-        mount_names: "{{ ansible_mounts | map(attribute='mount') | list}}"
-    - debug:
-        var: mount_names
-      loop: "{{ required_mounts }}"
-      failed_when: item not in mount_names
+- name: Create a directory if it does not exist
+  hosts: pavillion
+  ansible.builtin.file:
+    path: /backups
+    state: directory
+    mode: '0755'
+
+- name: Copy file with owner and permissions
+  hosts: pavillion
+  ansible.builtin.copy:
+    src: ../Linux-DesktopStuff/NFS/autofs.conf
+    dest: /backups/autofs.conf
+    owner: root
+    group: root
+    mode: '644'
+
+- name: Copy file with owner and permissions
+  hosts: pavillion
+  ansible.builtin.copy:
+    src: ../Linux-DesktopStuff/NFS/autofs.conf
+    dest: /backups/autofs.conf
+    owner: root
+    group: root
+    mode: '644'
+
+- name: Copy file with owner and permissions
+  hosts: pavillion
+  ansible.builtin.copy:
+    src: ../Linux-DesktopStuff/NFS/auto.master
+    dest: /backups/auto.master
+    owner: root
+    group: root
+    mode: '644'
+
+- name: Copy file with owner and permissions
+  hosts: pavillion  
+  ansible.builtin.copy:
+    src: ../Linux-DesktopStuff/NFS/auto.nfs
+    dest: /backups/auto.nfs
+    owner: root
+    group: root
+    mode: '644'   
+
+- name: Copy file with owner and permissions
+  hosts: pavillion  
+  ansible.builtin.copy:
+    src: ../Linux-DesktopStuff/NFS/auto.smb
+    dest: /backups/auto.smb
+    owner: root
+    group: root
+    mode: '644'
+
+- name: Copy file with owner and permissions
+  hosts: pavillion  
+  ansible.builtin.copy:
+    src: ../Linux-DesktopStuff/NFS/nfs.conf
+    dest: /backups/nfs.conf
+    owner: root
+    group: root
+    mode: '644'
+
+#autofs.conf  
+#auto.master  
+#auto.nfs  
+#auto.smb  
+#nfs.conf
