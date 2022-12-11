@@ -61,7 +61,7 @@
             dest: /backups/auto.nfs
             owner: root
             group: root
-            mode: '644'   
+            mode: '644'
 
       - name: Copy file with owner and permissions
         ansible.builtin.copy:
@@ -77,9 +77,8 @@
             owner: root
             group: root
             mode: '644'
-
-# autofs.conf  
-# auto.master  
-# auto.nfs  
-# auto.smb  
+# autofs.conf
+# auto.master
+# auto.nfs
+# auto.smb
 # nfs.conf
