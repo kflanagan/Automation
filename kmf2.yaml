@@ -38,7 +38,7 @@
       - name: copying files with playbook
         become: true 
         copy:
-          src: "/home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto*.*"
+          src: "/home/kevin/gitrepos/Linux-DesktopStuff/NFS/autofs.conf"
           dest: /backups
           owner: root
           group: root        
