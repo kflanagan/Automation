@@ -46,7 +46,7 @@
       - name: copying file with playbook
         become: true 
         copy:
-          src: ./home/kevin/gitrepos/Linux-DesktopStuff/NFS/nfs.conf
+          src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/nfs.conf
           dest: /backups
           owner: root
           group: root        
