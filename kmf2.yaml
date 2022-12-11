@@ -1,15 +1,5 @@
 - name: Hard disk test
   hosts: pavillion
-#  connection: local
-  gather_facts: true
-  vars:
-    ism:
-      host: "{{ ansible_ssh_host }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-
-  tasks:
-
-    - name: "Get hard disk information"
-      inspur.ispim.hard_disk_info:
-        provider: "{{ ism }}"
+- name: "Get hard disk information"
+  inspur.ispim.hard_disk_info:
+    provider: "{{ ism }}"
