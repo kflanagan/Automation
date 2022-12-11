@@ -44,21 +44,15 @@
 #          group: root        
 #          mode: 0644
 
-
-    -name: copying multiple files to one destinations
-    hosts: pavillion
-    copy:
-        become: true 
-        src: {{ item.src }}
-        dest: {{ item.dest }}
-        owner: root
-        group: root
-        mode: u=rw, g=rw, o=r
-    with-items:
-      -{ src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/autofs.conf, dest: /backups/ }
-      -{ src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.master, dest: /backups/ }
-      -{ src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.nfs, dest: /backups/ }
-      -{ src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.smb, dest: /backups/ }
+- name: copy rundeck files
+  become: true
+  copy: src=/home/kevin/gitrepos/Linux-DesktopStuff/NFS/{{ item }} dest=/backups/
+  with_items:
+    - autofs.conf
+    - auto.master
+    - auto.nfs
+    - auto.smb
+    - nfs.conf
 
 
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
