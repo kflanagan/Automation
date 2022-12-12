@@ -35,43 +35,43 @@
 - name: Ansible Copy Example Local to Remote
   hosts: pavillion
   tasks:
-      # - name: Copy config files 
+      # - name: Copy config files
       #  become: true
       # copy:
       #    src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
       #    dest: /backups
       #    owner: root
-      #    group: root       
+      #    group: root
       #    mode: 0644
       #    follow: yes
-    - name: autofs.conf
+    - name: autofs-conf
       become: true
       copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/autofs.conf
         dest: /backups/autofs.conf
         owner: root
-        group: root       
+        group: root      
         mode: 0644
-        follow: yes
-    - name: auto.master
+        follow: true
+    - name: auto-master
       become: true
       copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.master
         dest: /backups/auto.master
         owner: root
-        group: root       
+        group: root      
         mode: 0644
         follow: yes
-    - name: auto.nfs
+    - name: auto-nfs
       become: true
       copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.nfs
         dest: /backups/auto.nfs
         owner: root
-        group: root       
+        group: root
         mode: 0644
-        follow: yes
-    - name: auto.smb
+        follow: true
+    - name: auto-smb
       become: true
       copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/auto.smb
@@ -79,16 +79,16 @@
         owner: root
         group: root       
         mode: 0644
-        follow: yes
-    - name: nfs.conf
+        follow: true
+    - name: nfs-conf
       become: true
       copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS/nfs.conf
         dest: /backups/nfs.conf
         owner: root
-        group: root       
+        group: root 
         mode: 0644
-        follow: yes
+        follow: true
 
 
 
