@@ -36,6 +36,7 @@
   hosts: pavillion
   tasks:
     - name: Copy config files
+      ansible.builtin.file:
       become: true
       copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
@@ -43,7 +44,7 @@
         owner: root
         group: root
         mode: 0644
-        follow: yes
+        follow: true
 
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
