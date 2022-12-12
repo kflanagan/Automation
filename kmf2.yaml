@@ -36,9 +36,8 @@
   hosts: pavillion
   tasks:
     - name: Copy config files
-      ansible.builtin.file:
-      become: true
       copy:
+        become: true
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
         dest: /backups
         owner: root
