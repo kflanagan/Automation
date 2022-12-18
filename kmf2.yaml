@@ -32,54 +32,19 @@
       #    mode: '0755'
 
 # This will copy the whole directory
-# - name: Ansible Copy Example Local to Remote
-#  hosts: pavillion
-#  tasks:
-#    - name: Copy config files
-#      ansible.builtin.copy:
-#        become: true
-#        src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
-#        dest: /backups
-#        owner: root
-#        group: root
-#        mode: 0644
-#        follow: true
-
-# restart a service
-# - name: Service restart
-#  ansible.builtin.service:
-#  tasks:
-#  - name: restart ntpd
-#    hosts: pi
-#    ansible.builtin.service:
-#      name: nfs-server
-#      become: true
-#     state: restarted
-#  - name: restart ntpd
-#    hosts: pi
-#    ansible.builtin.service:
-#      name: nfs-kernel-server
-#      become: true
-#      state: restarted
-
-
-# Restart a service
-- name: Restart Service
-  hosts: pi
+- name: Ansible Copy Example Local to Remote
+  hosts: pavillion
   become: true
   tasks:
-    - name: Restart nfs kernel server
-      ansible.builtin.service:
-        name: nfs-kernel-server
-        state: restarted
-    - name: Restart nfs server
-      ansible.builtin.service:
-        name: nfs-server
-        state: restarted
-
-
-
-
+    - name: Copy config files
+      ansible.builtin.copy:
+#        become: true
+        src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
+        dest: /backups
+        owner: root
+        group: root
+        mode: 0644
+        follow: true
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
 # autofs.conf
@@ -87,3 +52,4 @@
 # auto.nfs
 # auto.smb
 # nfs.conf
+
