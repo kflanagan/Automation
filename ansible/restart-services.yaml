@@ -1,0 +1,16 @@
+
+# Restart a service
+- name: Restart Service
+  hosts: pi
+  become: true
+  tasks:
+    - name: Restart nfs kernel server
+      ansible.builtin.service:
+        name: nfs-kernel-server
+        state: restarted
+    - name: Restart nfs server
+      ansible.builtin.service:
+        name: nfs-server
+        state: restarted
+
+
