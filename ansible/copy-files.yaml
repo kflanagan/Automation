@@ -2,10 +2,15 @@
 # This will copy the whole directory, next is to copy the files from the directory 
 # to where they belog
 
+
+
 - name: Ansible Copy Example Local to Remote
   hosts: pavillion
   become: true
   tasks:
+
+
+
     - name: Copy config files
       ansible.builtin.copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
