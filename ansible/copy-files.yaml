@@ -1,12 +1,13 @@
 
-# This will copy the whole directory
+# This will copy the whole directory, next is to copy the files from the directory 
+# to where they belog
+
 - name: Ansible Copy Example Local to Remote
   hosts: pavillion
   become: true
   tasks:
     - name: Copy config files
       ansible.builtin.copy:
-#        become: true
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
         dest: /backups
         owner: root
@@ -15,6 +16,7 @@
         follow: true
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
+# The files in the directory are
 # autofs.conf
 # auto.master
 # auto.nfs
