@@ -31,20 +31,29 @@
       #    state: directory
       #    mode: '0755'
 
-# This will copy the whole directory
+# This will copy the whole director
 - name: Ansible Copy Example Local to Remote
   hosts: pavillion
   become: true
   tasks:
-    - name: Copy config files
-      ansible.builtin.copy:
-#        become: true
-        src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
-        dest: /backups
-        owner: root
-        group: root
-        mode: 0644
-        follow: true
+
+    - name: Create Directory
+      files:
+        path=/foobar
+        owner=root
+        mode= 0750
+        state=directory 
+
+
+
+#    - name: Copy config files
+ #     ansible.builtin.copy:
+ #       src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
+ #       dest: /backups
+ #       owner: root
+ #       group: root
+ #       mode: 0644
+ #       follow: true
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
 # autofs.conf
