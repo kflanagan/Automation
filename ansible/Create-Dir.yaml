@@ -1,0 +1,11 @@
+- name: Ansible create directory
+  hosts: pavillion
+  become: true
+  tasks:
+    - name: Create Directory
+      ansible.builtin.file:
+        path: /tmp/foobar
+        owner: root
+        mode: 0750
+        state: directory
+# ansible-playbook kmf3.yaml --extra-vars 'ansible_become_pass=PassWordHere'
