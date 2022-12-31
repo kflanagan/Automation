@@ -31,18 +31,18 @@
       #    state: directory
       #    mode: '0755'
 
-# This will copy the whole director
+# This will copy the whole directory
 - name: Ansible Copy Example Local to Remote
   hosts: pavillion
   become: true
   tasks:
 
-    - name: Create Directory
-      files:
-        path=/foobar
-        owner=root
-        mode= 0750
-        state=directory 
+- name: Create Directory
+  files:
+    path=/foobar
+    owner=root
+    mode= 0750
+    state=directory 
 
 
 
