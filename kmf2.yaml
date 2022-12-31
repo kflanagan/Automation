@@ -37,6 +37,11 @@
   hosts: fedoraworkstation
   become: true
   tasks:
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /backups
+        state: directory
+        mode: '0755'
     - name: Install the latest version of NFS common package
       ansible.builtin.yum:
         name: nfs-utils
