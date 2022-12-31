@@ -30,35 +30,34 @@
       #    path: /backups
       #    state: directory
       #    mode: '0755'
+# This will copy the whole directory, next is to copy the files from the directory
+# to where they belog
 
-# This will copy the whole directory
 - name: Ansible Copy Example Local to Remote
-  hosts: pavillion
+  hosts: fedoraworkstation
   become: true
   tasks:
+    - name: Install the latest version of NFS common package
+      ansible.builtin.yum:
+        name: nfs-utils
+    - name: Install autofs
+      ansible.builtin.yum:
+        name: autofs
+    - name: Copy config files
+      ansible.builtin.copy:
+        src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
+        dest: /backups
+        owner: root
+        group: root
+        mode: 0644
+        follow: true
 
-- name: Create Directory
-  files:
-    path=/foobar
-    owner=root
-    mode= 0750
-    state=directory 
 
-
-
-#    - name: Copy config files
- #     ansible.builtin.copy:
- #       src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
- #       dest: /backups
- #       owner: root
- #       group: root
- #       mode: 0644
- #       follow: true
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
+# The files in the directory are
 # autofs.conf
 # auto.master
 # auto.nfs
 # auto.smb
 # nfs.conf
-
