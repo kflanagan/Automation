@@ -1,14 +1,3 @@
-# Ensure a service is started on all webservers:
-
-# ansible webservers -m ansible.builtin.service -a "name=httpd state=started"
-# Alternatively, restart a service on all webservers:
-
-# ansible webservers -m ansible.builtin.service -a "name=httpd state=restarted"
-# Ensure a service is stopped:
-
-# ansible webservers -m ansible.builtin.service -a "name=httpd state=stopped"
-# # ###################################################################################
-
 #
 # Gathers facts for the machines in the Linux group (a.k.a Delegating facts)
 # This works now, but doesn't return much -- kf
@@ -20,18 +9,9 @@
 #      delegate_to: "{{ item }}"
 #      delegate_facts: true
 #      loop: "{{ groups['Linux'] }}"
-# - name: Do NFS setup
-#  hosts: pavillion
-#  tasks:
-
-      # - name: Create a directory if it does not exist
-      #  hosts: pavillion
-      #  ansible.builtin.file:
-      #    path: /backups
-      #    state: directory
-      #    mode: '0755'
-# This will copy the whole directory, next is to copy the files from the directory
-# to where they belog
+#
+# This will work on hosts that use DNF/Yum generally fedora.
+# Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ansible Copy Example Local to Remote
   hosts: fedoraworkstation
