@@ -27,9 +27,6 @@
         name:
           - nfs-utils
           - autofs
-# - name: Install autofs
-#      ansible.builtin.yum:
-#        name: autofs
     - name: Copy config files
       ansible.builtin.copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
@@ -42,16 +39,26 @@
       ansible.builtin.yum:
         name: httpd
         state: absent
+    - name: Create code directory
+      ansible.builtin.file:
+        path: /code
+        state: directory
+        owner: kevin
+        group: kevin
+        mode: 0775
+    - name: Export /code
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: /code  *(rw,sync,no_subtree_check)
+        state: present
+    - name: Restart NFS server
+      ansible.builtin.systemd:
+        name: nfs-server.service
+        state: reloaded
 #    - name: Upgrade all packages
 #      ansible.builtin.yum:
 #        name: '*'
 #        state: latest
-
-# - name: Remove the Apache package
-#  ansible.builtin.yum:
-#    name: httpd
-#    state: absent
-
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
 # The files in the directory are
