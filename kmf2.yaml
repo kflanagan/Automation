@@ -59,12 +59,6 @@
 #      ansible.builtin.yum:
 #        name: '*'
 #        state: latest
-
-# - name: Remove the Apache package
-#  ansible.builtin.yum:
-#    name: httpd
-#    state: absent
-
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
 # The files in the directory are
