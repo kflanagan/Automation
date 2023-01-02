@@ -13,8 +13,8 @@
 # This will work on hosts that use apt
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
-- name: Ansible Copy Example Local to Remote
-  hosts: Ubuntu
+- name: Ubuntu host config
+  hosts: 
   become: true
   tasks:
     - name: Create a directory if it does not exist
@@ -53,7 +53,24 @@
         path: /etc/exports
         line: /code  *(rw,sync,no_subtree_check)
         state: present
-    - name: insert lines in /etc/hosts
+    - name: Create code directory
+      ansible.builtin.file:
+        path: /nfs
+        state: directory
+        owner: kevin
+        group: kevin
+        mode: 0775
+    - name: Update auto.master
+      ansible.builtin.lineinfile:
+        path: /etc/auto.master
+        line: "/nfs /etc/auto.nfs"
+        state: present
+    - name: Auto.nfs
+      ansible.builtin.lineinfile:
+        path: /etc/auto.nfs
+        line: pi -fstype=nfs4 pi:/media
+        state: present
+    - name: Insert lines in /etc/hosts
       ansible.builtin.lineinfile:
         path: /etc/hosts
         line: "192.168.86.49 pavillion pavillion.flanagannc.net \n192.168.86.36 pi pi.flanagannc.net \n192.168.122.12 fedoraworkstation \n192.168.122.111 mint \n192.168.86.59 envy"
