@@ -1,0 +1,8 @@
+ - name: Gather info
+   hosts: Utuntu
+   tasks:
+     - name: Gather facts from server
+       ansible.builtin.setup:
+       delegate_to: "{{ item }}"
+       delegate_facts: true
+       loop: "{{ groups['Ubuntu'] }}"
