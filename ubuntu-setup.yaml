@@ -10,11 +10,11 @@
 #      delegate_facts: true
 #      loop: "{{ groups['Linux'] }}"
 #
-# This will work on hosts that use DNF/Yum generally fedora.
+# This will work on hosts that use apt
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ansible Copy Example Local to Remote
-  hosts: mint
+  hosts: Ubuntu
   become: true
   tasks:
     - name: Create a directory if it does not exist
@@ -22,12 +22,6 @@
         path: /backups
         state: directory
         mode: '0766'
-#    - name: Install the latest version of NFS common package
-#      ansible.builtin.yum:
-#        name:
-#          - nfs-utils
-#          - autofs
-# Need to replace the yum with apt
     - name: Install packages
       ansible.builtin.apt:
         pkg:
@@ -43,12 +37,10 @@
         group: root
         mode: 0644
         follow: true
-#    - name: Remove the Apache package
-#      ansible.builtin.yum:
-#        name: httpd
-#        state: absent
-# Need to replace the yum with apt
-
+    - name: Remove the Apache package
+      ansible.builtin.apt:
+        name: httpd
+        state: absent
     - name: Create code directory
       ansible.builtin.file:
         path: /code
@@ -61,14 +53,14 @@
         path: /etc/exports
         line: /code  *(rw,sync,no_subtree_check)
         state: present
+    - name: insert lines in /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "192.168.86.49 pavillion pavillion.flanagannc.net \n192.168.86.36 pi pi.flanagannc.net \n192.168.122.12 fedoraworkstation \n192.168.122.111 mint \n192.168.86.59 envy"
     - name: Restart NFS server
       ansible.builtin.systemd:
         name: nfs-server.service
         state: reloaded
-#    - name: Upgrade all packages
-#      ansible.builtin.yum:
-#        name: '*'
-#        state: latest
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
 # The files in the directory are
