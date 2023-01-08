@@ -1,0 +1,16 @@
+- name: Ubuntu host config
+  hosts: mint
+  become: true
+  tasks:
+    - name: Touch a file, but do not change times this makes the task idempotent
+      ansible.builtin.file:
+        path: /etc/foo.conf
+        state: touch
+        mode: u+rw,g-wx,o-rwx
+        modification_time: preserve
+        access_time: preserve
+    - name: Update /etc/foo.conf
+      ansible.builtin.lineinfile:
+        path: /etc/foo.conf
+        line: /code  *(rw,sync,no_subtree_check)
+        state: present
