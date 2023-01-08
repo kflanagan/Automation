@@ -72,6 +72,7 @@
         path: /etc/auto.master
         line: "/nfs /etc/auto.nfs"
         state: present
+<<<<<<< HEAD
     - name: create auto.fs if needed
       ansible.builtin.file:
         path: /etc/auto.nfs
@@ -79,6 +80,16 @@
       register: p
       changed_when: p.diff.before.state == "absent"
     - name: Populate auto.nfs for pi 
+=======
+    - name: Touch auto.nfs, but do not change times this makes the task idempotent
+      ansible.builtin.file:
+        path: /etc/auto.nfs
+        state: touch
+        mode: u+rwx,g+rwx,o+rwx
+        modification_time: preserve
+        access_time: preserve
+    - name: Update auto.nfs
+>>>>>>> 0921ad9 (continued progress)
       ansible.builtin.lineinfile:
         path: /etc/auto.nfs
         line: pi -fstype=nfs4 pi:/media
@@ -88,7 +99,11 @@
       ansible.builtin.lineinfile:
         path: /etc/hosts
         line: "192.168.86.49 pavillion pavillion.flanagannc.net \n192.168.86.36 pi pi.flanagannc.net \n192.168.122.12 fedoraworkstation \n192.168.122.111 mint \n192.168.86.59 envy"
+<<<<<<< HEAD
 # Restart nfs server
+=======
+        state: present
+>>>>>>> 0921ad9 (continued progress)
     - name: Restart NFS server
       ansible.builtin.systemd:
         name: nfs-server.service
