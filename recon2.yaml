@@ -1,10 +1,24 @@
 # This playbook gathers a bunch of info, mounts and other misc things
+# Then it checks to make sure that / has 3 GB free
 - name: Ansible Variable Example Playbook
   hosts: Ubuntu
   tasks:
 
-    - debug:
-        msg: "{{ansible_mounts}}"
-    - debug:
-        msg: "Host Name {{ansible_nodename}}, RAM in MB {{ansible_memtotal_mb}}, Free mem in MB {{ansible_memfree_mb}}, IP address {{ansible_all_ipv4_addresses}}, Time {{ansible_date_time.time}}, Distribution {{ansible_distribution}}, Version {{ansible_distribution_version}}, DNS Servers {{ansible_dns.nameservers}}, User {{ansible_user_id}}"
+#    - debug:
+#        msg: "{{ansible_mounts}}"
 
+    - debug:
+        msg: "Host Name: {{ansible_nodename}}, RAM in MB: {{ansible_memtotal_mb}}, Free mem in MB: {{ansible_memfree_mb}}, IP address: {{ansible_all_ipv4_addresses}}, Time: {{ansible_date_time.time}}, Distribution: {{ansible_distribution}}, Version: {{ansible_distribution_version}}, DNS Servers: {{ansible_dns.nameservers}}, User: {{ansible_user_id}}"
+
+    - name: Get / freespace 
+      shell: df / --output\=avail | tail -1
+      register: tmp_free
+    - name: Check / freespace
+      shell: df -h / --output\=avail | tail -1
+      register: tmp_freespace
+    - debug:
+        msg: "/ Filesystem has{{tmp_freespace.stdout}} free"
+    - fail:
+        msg: / does not have the minimum space required to continue (3Gb requested). 
+      when: tmp_free.stdout|float is lt 3000000
+   
