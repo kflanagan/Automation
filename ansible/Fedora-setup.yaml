@@ -1,33 +1,25 @@
 #
-# Gathers facts for the machines in the Linux group (a.k.a Delegating facts)
-# This works now, but doesn't return much -- kf
-# - name: Gather info
-#  hosts: Linux
-#  tasks:
-#    - name: Gather facts from server
-#      ansible.builtin.setup:
-#      delegate_to: "{{ item }}"
-#      delegate_facts: true
-#      loop: "{{ groups['Linux'] }}"
 #
 # This will work on hosts that use DNF/Yum generally fedora.
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
-- name: Ansible Copy Example Local to Remote
-  hosts: fedoraworkstation
+- name: Ansible configure Fedora machines for KF use
+  hosts: fedora2
   become: true
   tasks:
-    - name: Create a directory if it does not exist
+######  Install various file sharing packages if they aren't there
+    - name: Install the latest version of NFS common package
+      ansible.builtin.dnf:
+        name:
+          - nfs-utils
+          - autofs
+#############  Create a directory and Stash config files in it for if they are needed later
+    - name: Create /backups directory if it does not exist
       ansible.builtin.file:
         path: /backups
         state: directory
         mode: '0755'
-    - name: Install the latest version of NFS common package
-      ansible.builtin.yum:
-        name:
-          - nfs-utils
-          - autofs
-    - name: Copy config files
+    - name: Copy config files to /backups/NFS
       ansible.builtin.copy:
         src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
         dest: /backups
@@ -35,10 +27,12 @@
         group: root
         mode: 0644
         follow: true
+  #### Make sure that there's no Apache web server installed
     - name: Remove the Apache package
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         name: httpd
         state: absent
+##### Create directory for shared code
     - name: Create code directory
       ansible.builtin.file:
         path: /code
@@ -46,22 +40,74 @@
         owner: kevin
         group: kevin
         mode: 0775
-    - name: Export /code
+#####  Update /etc/exports to Export /code and /media/nfs as NFS
+    - name: Update /etc/exports
       ansible.builtin.lineinfile:
         path: /etc/exports
-        line: /code  *(rw,sync,no_subtree_check)
         state: present
+        line: "{{ item }}"
+      with_items:
+        - '/media/nfs *(rw,no_root_squash)'
+        - '/code  *(rw,sync,no_subtree_check)'
+# Auto.nfs
+    - name: Create auto.nfs file
+      ansible.builtin.file:
+        path: /etc/auto.nfs
+        state: touch
+        owner: root
+        group: root
+        mode: 0644
+    - name: Update auto.nfs
+      ansible.builtin.lineinfile:
+        path: /etc/auto.nfs
+        line: pi -fstype=nfs4 192.168.86.36:/media
+        state: present
+################  Create /nfs
+    - name: Create /nfs directory
+      ansible.builtin.file:
+        path: /nfs
+        state: directory
+        owner: kevin
+        group: kevin
+        mode: 0775
+################  Create /misc
+    - name: Create /misc directory
+      ansible.builtin.file:
+        path: /misc
+        state: directory
+        owner: kevin
+        group: kevin
+        mode: 0775
+###################
+# Auto.master
+    - name: Create auto.master file
+      ansible.builtin.file:
+        path: /etc/auto.master
+        state: touch
+        owner: root
+        group: root
+        mode: 0644
+    - name: Update auto.master
+      ansible.builtin.lineinfile:
+        path: /etc/auto.master
+        state: present
+        line: "{{ item }}"
+      with_items:
+        - '/misc   /etc/auto.misc'
+        - '/nfs    /etc/auto.nfs'
+############# Now that the NFS config is done, restart the server
     - name: Restart NFS server
       ansible.builtin.systemd:
         name: nfs-server.service
         state: reloaded
-#    - name: Upgrade all packages
-#      ansible.builtin.yum:
-#        name: '*'
-#        state: latest
+###############  Update all packages
+    - name: Upgrade all packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
-# The files in the directory are
+# The files in the /backups/NFS directory are, they shouldn't be needed, I've worked out the editing files from the playbook
 # autofs.conf
 # auto.master
 # auto.nfs
