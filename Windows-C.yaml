@@ -1,0 +1,16 @@
+- name: Look at C drive
+  hosts: envy
+  tasks:
+  - name: Get disk free space
+    ansible.windows.win_shell: Get-PsDrive c | ConvertTo-Json
+    register: output
+
+  - name: Extract free space
+    ansible.builtin.set_fact:
+      free_json: "{{ output.stdout | from_json }}"
+
+  - name: Show free space on C Drive
+    ansible.builtin.debug:
+      msg: Drive C has {{ Cdrive }} free
+    vars:
+      Cdrive: '{{ (free_json.Free/1024|pow(3))|int }} GB'
