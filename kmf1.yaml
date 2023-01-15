@@ -1,5 +1,5 @@
 - name: Kevin Test 1
-  hosts: Linux
+  hosts: Pavillion
   tasks:
   - name: Check to see that autofs is started
     ansible.builtin.service:
@@ -7,18 +7,10 @@
       state: started
 
 
-Into the night
-Willow
-White Lotus
-https://www.youtube.com/channel/UC09rNVvxRl0xw8CiVXbhdpw
-Star Trek - Strange new worlds
-          Lower Decks
-Our flag means death
-
-
-
-
-Pachino - Nazi hunters
-Occupied
-
-
+# Into the night
+# Willow
+# White Lotus
+# https://www.youtube.com/channel/UC09rNVvxRl0xw8CiVXbhdpw
+# Star Trek - Strange new worlds
+# Lower Decks
+# Our flag means death
