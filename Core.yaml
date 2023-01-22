@@ -1,0 +1,40 @@
+# This file is meant to include the ones you need based on the OS
+- name: Ansible configure Linux machines for KF use
+  hosts: All-Linux
+  become: true
+  tasks:
+#    - import_tasks: hosts.yaml
+##### Create directory for shared code
+    - name: Create code directory
+      ansible.builtin.file:
+        path: /code
+        state: directory
+        owner: kevin
+        group: kevin
+        mode: 0775
+      tasks:
+    - name: Add lines to hosts file if not there
+      ansible.builtin.lineinfile:
+        dest: /etc/hosts
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^192.168.86.49', line: '192.168.86.49 pavillion pavillion.flanagannc.net' }
+        - { regexp: '^192.168.86.36', line: '192.168.86.36 pi pi.flanagannc.net' }
+        - { regexp: '^192.168.122.12', line: '192.168.122.12 fedoraworkstation' }
+        - { regexp: '^192.168.122.111', line: '192.168.122.111 mint' }
+        - { regexp: '^192.168.86.59', line: '192.168.86.59 envy' }
+
+      when: ansible_os_family == "Debian"
+      # Do some housecleaning, remove packages that aren't wanted
+    - name: Remove the Apache package
+      ansible.builtin.apt:
+        name: httpd
+        state: absent
+
+      when: ansible_os_family == "RedHat"
+   #### Make sure that there's no Apache web server installed
+    - name: Remove the Apache package
+      ansible.builtin.dnf:
+        name: httpd
+        state: absent

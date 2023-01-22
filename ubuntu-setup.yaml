@@ -14,7 +14,7 @@
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ubuntu host config
-  hosts: mint
+  hosts: envy
   become: true
   tasks:
     - name: Create /backups directory if it does not exist
@@ -72,15 +72,6 @@
         path: /etc/auto.master
         line: "/nfs /etc/auto.nfs"
         state: present
-<<<<<<< HEAD
-    - name: create auto.fs if needed
-      ansible.builtin.file:
-        path: /etc/auto.nfs
-        state: touch
-      register: p
-      changed_when: p.diff.before.state == "absent"
-    - name: Populate auto.nfs for pi 
-=======
     - name: Touch auto.nfs, but do not change times this makes the task idempotent
       ansible.builtin.file:
         path: /etc/auto.nfs
@@ -89,25 +80,37 @@
         modification_time: preserve
         access_time: preserve
     - name: Update auto.nfs
->>>>>>> 0921ad9 (continued progress)
       ansible.builtin.lineinfile:
         path: /etc/auto.nfs
         line: pi -fstype=nfs4 pi:/media
         state: present
 # Update /etc/hosts this is good for all systems
-    - name: Insert lines in /etc/hosts
-      ansible.builtin.lineinfile:
-        path: /etc/hosts
-        line: "192.168.86.49 pavillion pavillion.flanagannc.net \n192.168.86.36 pi pi.flanagannc.net \n192.168.122.12 fedoraworkstation \n192.168.122.111 mint \n192.168.86.59 envy"
-<<<<<<< HEAD
-# Restart nfs server
-=======
-        state: present
->>>>>>> 0921ad9 (continued progress)
+#    - name: Insert lines in /etc/hosts
+#      ansible.builtin.lineinfile:
+#        path: /etc/hosts
+#        line: "192.168.86.49 pavillion pavillion.flanagannc.net
+#        192.168.86.36 pi pi.flanagannc.net
+#        192.168.122.12 fedoraworkstation
+#        192.168.122.111 mint
+#        192.168.86.59 envy"
+#        state: present
     - name: Restart NFS server
       ansible.builtin.systemd:
         name: nfs-server.service
         state: reloaded
+    - name: Add lines to hosts file if not there
+      ansible.builtin.lineinfile:
+        dest: /etc/hosts
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^192.168.86.49', line: '192.168.86.49 pavillion pavillion.flanagannc.net' }
+        - { regexp: '^192.168.86.36', line: '192.168.86.36 pi pi.flanagannc.net' }
+        - { regexp: '^192.168.122.12', line: '192.168.122.12 fedoraworkstation' }
+        - { regexp: '^192.168.122.111', line: '192.168.122.111 mint' }
+        - { regexp: '^192.168.86.59', line: '192.168.86.59 envy' }
+
+
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
 # The files in the directory are
