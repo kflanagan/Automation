@@ -14,7 +14,7 @@
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ubuntu host config
-  hosts: mint,rebornos
+  hosts: rebornos
   become: true
   tasks:
     - name: Create /backups directory if it does not exist
@@ -40,10 +40,7 @@
         mode: 0644
         follow: true
 # Do some housecleaning, remove packages that aren't wanted
-    - name: Remove the Apache package
-      ansible.builtin.apt:
-        name: httpd
-        state: absent
+ 
 # Create a directory that's the same on all of my Linux hosts
     - name: Create code directory
       ansible.builtin.file:
