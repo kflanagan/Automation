@@ -4,7 +4,7 @@
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ansible configure Fedora machines for KF use
-  hosts: fedoraworkstation
+  hosts: fedoraworkstation, fedora
   become: true
   tasks:
 ######  Install various file sharing packages if they aren't there
