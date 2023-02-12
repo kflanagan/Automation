@@ -4,7 +4,7 @@
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ansible configure Fedora machines for KF use
-  hosts: fedora2
+  hosts: fedoraworkstation
   become: true
   tasks:
 ######  Install various file sharing packages if they aren't there
@@ -59,8 +59,9 @@
         mode: 0644
     - name: Update auto.nfs
       ansible.builtin.lineinfile:
-        path: /etc/auto.nfs
-        line: pi -fstype=nfs4 192.168.86.36:/media
+        path: /etc/auto.nfs 
+        line: '# Adding comment'
+#        line: pi -fstype=nfs4 192.168.86.36:/media
         state: present
 ################  Create /nfs
     - name: Create /nfs directory
@@ -105,7 +106,7 @@
       ansible.builtin.dnf:
         name: '*'
         state: latest
-#  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
+#  Command to run this from Ansible server is     -->      ansible-playbook PlaybookName.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
 # The files in the /backups/NFS directory are, they shouldn't be needed, I've worked out the editing files from the playbook
 # autofs.conf
