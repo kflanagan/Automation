@@ -4,7 +4,7 @@
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ansible configure Fedora machines for KF use
-  hosts: fedoraworkstation, fedora
+  hosts: fedora
   become: true
   tasks:
 ######  Install various file sharing packages if they aren't there
@@ -61,7 +61,7 @@
       ansible.builtin.lineinfile:
         path: /etc/auto.nfs 
         line: '# Adding comment'
-#        line: pi -fstype=nfs4 192.168.86.36:/media
+        line: envy -fstype=nfs4 192.168.1.104:/code
         state: present
 ################  Create /nfs
     - name: Create /nfs directory

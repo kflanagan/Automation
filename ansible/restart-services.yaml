@@ -1,7 +1,7 @@
 
 # Restart a service
 - name: Restart Service
-  hosts: pi
+  hosts: fedora
   become: true
   tasks:
     - name: Restart nfs kernel server

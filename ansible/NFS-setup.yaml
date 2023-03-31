@@ -14,7 +14,7 @@
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ansible Copy Example Local to Remote
-  hosts: fedoraworkstation
+  hosts: fedora
   become: true
   tasks:
     - name: Create a directory if it does not exist
