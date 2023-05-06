@@ -1,5 +1,5 @@
 - name: Check disk space
-  hosts: fedorasever
+  hosts: fedoraserver
   tasks:
     - name: Show some Mount point and device info
       debug:
