@@ -1,5 +1,5 @@
 - name: Apply all updates
-  hosts: envy
+  hosts: win10virt
   vars:
     # contents: "{{ lookup('file','c://temp/Winupdate_log.txt') }}"
   tasks:

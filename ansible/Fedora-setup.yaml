@@ -2,9 +2,14 @@
 #
 # This will work on hosts that use DNF/Yum generally fedora.
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
+# Pre-requisites
+# - /home/kevin/gitrepos/Linux-DesktopStuff/NFS must exist on the host running ansible,  Clone the Linux-DesktopStuff repo from github
+# - /etc/hosts and /etc/ansible/hosts need to have the hosts in question configured there. 
+# Limitations
+# - Can see physical hosts on the network, or VMs on the same host as the one running the Ansible server
 
 - name: Ansible configure Fedora machines for KF use
-  hosts: fedora
+  hosts: swift3
   become: true
   tasks:
 ######  Install various file sharing packages if they aren't there

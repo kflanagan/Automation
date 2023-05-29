@@ -14,7 +14,7 @@
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ubuntu host config
-  hosts: mint,rebornos
+  hosts: mint
   become: true
   tasks:
     - name: Create /backups directory if it does not exist
@@ -106,11 +106,10 @@
         line: "{{ item.line }}"
       loop:
         - { regexp: '^192.168.1.233', line: '192.168.1.233 pavillion pavillion.flanagannc.net' }
-#        - { regexp: '^192.168.1.2', line: '192.168.86.36 pi pi.flanagannc.net' }
-        - { regexp: '^192.168.122.12', line: '192.168.122.12 fedoraworkstation' }
-        - { regexp: '^192.168.122.111', line: '192.168.122.111 mint' }
+        - { regexp: '^192.168.122.12', line: '#192.168.122.12 fedoraworkstation' }
+        - { regexp: '^192.168.122.111', line: '#192.168.122.111 mint' }
         - { regexp: '^192.168.1.104', line: '192.168.1.104 envy' }
-        - { regexp: '^192.168.122.198', line: '192.168.122.198 rebornos' }
+
 
 #  Command to run this from Ansible server is     -->      ansible-playbook kmf2.yaml --extra-vars 'ansible_become_pass=PassWordHere
 
