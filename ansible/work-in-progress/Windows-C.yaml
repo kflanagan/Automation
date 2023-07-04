@@ -5,9 +5,9 @@
     ansible.windows.win_shell: Get-PsDrive c | ConvertTo-Json
     register: output
 
-  - name: Extract free space
-    ansible.builtin.set_fact:
-      free_json: "{{ output.stdout | from_json }}"
+#  - name: Extract free space
+#    ansible.builtin.set_fact:
+#      free_json: "{{ output.stdout | from_json }}"
 
   - name: Show free space on C Drive
     ansible.builtin.debug:
