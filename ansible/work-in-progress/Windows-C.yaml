@@ -9,8 +9,21 @@
 #    ansible.builtin.set_fact:
 #      free_json: "{{ output.stdout | from_json }}"
 
-  - name: Show free space on C Drive
-    ansible.builtin.debug:
-      msg: Drive C has {{ Cdrive }} free
+#  - name: Show free space on C Drive
+#    ansible.builtin.debug:
+#      msg: Drive C has {{ Cdrive }} free
+#    vars:
+#      Cdrive: '{{ (free_json.Free/1024|pow(3))|int }} GB'
+
+  - name: Retrieve Disk Usage
+    win_shell: 'Get-PSDrive C | Select-Object Free'
+    register: rawcsize
+
+#  # Convert disk size in Gigabytes
+  - name: Convert system disk into various formats and export
     vars:
-      Cdrive: '{{ (free_json.Free/1024|pow(3))|int }} GB'
+      disk_out_free: '{{ rawcsize.stdout[0] }}'
+      disk_int: '{{ rawcsize.stdout | int }}'
+      disk_gb: '{{ disk_int | int}}'
+    debug:
+      msg: 'rawcsize.stdout: {{(rawcsize.stdout)}} disk_out_free: {{(disk_out_free)}}  disk_int: {{(disk_int)}} disk_gb: {{(disk_gb)}}'
