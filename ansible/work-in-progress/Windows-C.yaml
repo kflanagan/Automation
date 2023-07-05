@@ -15,15 +15,29 @@
 #    vars:
 #      Cdrive: '{{ (free_json.Free/1024|pow(3))|int }} GB'
 
-  - name: Retrieve Disk Usage
-    win_shell: 'Get-PSDrive C | Select-Object Free'
-    register: rawcsize
+#  - name: Retrieve Disk Usage
+#    win_shell: 'Get-PSDrive C | Select-Object Free'
+#    register: rawcsize
 
 #  # Convert disk size in Gigabytes
-  - name: Convert system disk into various formats and export
-    vars:
-      disk_out_free: '{{ rawcsize.stdout[0] }}'
-      disk_int: '{{ rawcsize.stdout | int }}'
-      disk_gb: '{{ disk_int | int}}'
+#  - name: Convert system disk into various formats and export
+#    vars:
+#      disk_out_free: '{{ rawcsize.stdout[0] }}'
+#      disk_int: '{{ rawcsize.stdout | int }}'
+#      disk_gb: '{{ disk_int | int}}'
+#    debug:
+#      msg: 'rawcsize.stdout: {{(rawcsize.stdout)}} disk_out_free: {{(disk_out_free)}}  disk_int: {{(disk_int)}} disk_gb: {{(disk_gb)}}'
+
+
+
+  - name: get disk free space
+    win_shell: Get-PsDrive c | ConvertTo-Json
+    register: output
+
+  - name: extract free space
+    set_fact:
+      free_json: "{{ output.stdout|from_json}}"
+
+  - name:
     debug:
-      msg: 'rawcsize.stdout: {{(rawcsize.stdout)}} disk_out_free: {{(disk_out_free)}}  disk_int: {{(disk_int)}} disk_gb: {{(disk_gb)}}'
+      var: free_json.Free
