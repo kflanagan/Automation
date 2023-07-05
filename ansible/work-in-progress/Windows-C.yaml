@@ -30,14 +30,20 @@
 
 
 
-  - name: get disk free space
-    win_shell: Get-PsDrive c | ConvertTo-Json
-    register: output
+  # - name: get disk free space
+  #   win_shell: Get-PsDrive c | ConvertTo-Json
+  #   register: output
 
-  - name: extract free space
-    set_fact:
-      free_json: "{{ output.stdout|from_json}}"
+  # - name: extract free space
+  #   set_fact:
+  #     free_json: "{{ output.stdout|from_json}}"
 
-  - name:
-    debug:
-      var: free_json.Free
+  # - name:
+  #   debug:
+  #     var: free_json.Free
+
+
+  - name: Display disk space
+    win_shell: Get-PSDrive | Select-Object Name, Used, Free, @{Name="Capacity";Expression={"{0:N2}" -f ($_.Used + $_.Free)/1GB}} | Format-Table -AutoSize
+    register: disk_space
+  - debug: var=disk_space.stdout_lines
