@@ -1,4 +1,3 @@
-#
 # Gathers facts for the machines in the Linux group (a.k.a Delegating facts)
 # This works now, but doesn't return much -- kf
 # - name: Gather info
