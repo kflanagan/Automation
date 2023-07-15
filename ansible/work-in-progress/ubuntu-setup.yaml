@@ -14,7 +14,7 @@
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
 - name: Ubuntu host config
-  hosts: mint
+  hosts: mint1
   become: true
   tasks:
     - name: Create /backups directory if it does not exist
