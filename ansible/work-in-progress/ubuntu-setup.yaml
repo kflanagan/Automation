@@ -25,14 +25,14 @@
         state: directory
         mode: '0766'
 #updates
-- name: Run the equivalent of "apt-get update" as a separate step
-  ansible.builtin.apt:
-    update_cache: yes
+  - name: Run the equivalent of "apt-get update" as a separate step
+    ansible.builtin.apt:
+      update_cache: yes
 
- - name: Update all packages to their latest version
-  ansible.builtin.apt:
-    name: "*"
-    state: latest   
+  - name: Update all packages to their latest version
+    ansible.builtin.apt:
+      name: "*"
+      state: latest   
 # Install the NFS and AutoFS packages on ubuntu with apt
     - name: Install packages
       ansible.builtin.apt:
