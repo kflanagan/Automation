@@ -12,6 +12,9 @@
 # This will work on hosts that use apt
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 
+
+
+
 - name: Ubuntu host config
   hosts: debian
   become: true
@@ -21,6 +24,15 @@
         path: /backups
         state: directory
         mode: '0766'
+#updates
+- name: Run the equivalent of "apt-get update" as a separate step
+  ansible.builtin.apt:
+    update_cache: yes
+
+ - name: Update all packages to their latest version
+  ansible.builtin.apt:
+    name: "*"
+    state: latest   
 # Install the NFS and AutoFS packages on ubuntu with apt
     - name: Install packages
       ansible.builtin.apt:
