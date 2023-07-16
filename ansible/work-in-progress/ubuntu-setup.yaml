@@ -12,7 +12,7 @@
 # This will work on hosts that use apt
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
 - name: Ubuntu host config
-  hosts: debian
+  hosts: mint1
   become: true
   tasks:
     - name: Create /backups directory if it does not exist
