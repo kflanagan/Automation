@@ -1,5 +1,5 @@
 - name: Check disk space
-  hosts: pavillion
+  hosts: fedora38
   tasks:
     - name: Show filesystems that are ext4
       debug:
