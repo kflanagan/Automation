@@ -11,4 +11,6 @@
 #      when: item.mount == '/boot'
 #
 # Here's the loop that walks through all of the mounts 
-#      loop: "{{ ansible_facts.default_ipv4 }}"
+#      loop: "{{ ansible_facts.XXXX }}"
+# This is helpful for ideas as to what info is there
+# https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_vars_facts.html
