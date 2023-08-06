@@ -1,5 +1,5 @@
 - name: Play with facts
-  hosts: fedora38
+  hosts: fedoraworkstation
   tasks:
     - name: Show ip
       debug:
