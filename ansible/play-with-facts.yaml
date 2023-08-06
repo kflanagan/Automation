@@ -1,0 +1,14 @@
+- name: Play with facts
+  hosts: fedora38
+  tasks:
+    - name: Show ip
+      debug:
+#        msg: "{{ item.mount }} - {{ item.device }}"
+        msg:  "{{ ansible_facts.default_ipv4.address }}"
+# The when statement is a conditional, a bit like an if
+# 
+#      when: item.fstype == 'ext4'  
+#      when: item.mount == '/boot'
+#
+# Here's the loop that walks through all of the mounts 
+#      loop: "{{ ansible_facts.default_ipv4 }}"
