@@ -1,0 +1,12 @@
+
+- name: Ansible apply updates to Fedora machines 
+  hosts: fedora38, fedoraserver2, fedoraserver
+  become: true
+  tasks:
+
+
+###############  Update all packages
+    - name: Upgrade all packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest

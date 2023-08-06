@@ -1,16 +1,77 @@
 - name: Look at C drive
-  hosts: envy
+  hosts: Win10Virt
   tasks:
-  - name: Get disk free space
-    ansible.windows.win_shell: Get-PsDrive c | ConvertTo-Json
-    register: output
+#  - name: Get disk free space
+#    ansible.windows.win_shell: Get-PsDrive c | ConvertTo-Json
+#    register: output
 
-  - name: Extract free space
-    ansible.builtin.set_fact:
-      free_json: "{{ output.stdout | from_json }}"
+#  - name: Extract free space
+#    ansible.builtin.set_fact:
+#      free_json: "{{ output.stdout | from_json }}"
 
-  - name: Show free space on C Drive
-    ansible.builtin.debug:
-      msg: Drive C has {{ Cdrive }} free
+#  - name: Show free space on C Drive
+#    ansible.builtin.debug:
+#      msg: Drive C has {{ Cdrive }} free
+#    vars:
+#      Cdrive: '{{ (free_json.Free/1024|pow(3))|int }} GB'
+
+#  - name: Retrieve Disk Usage
+#    win_shell: 'Get-PSDrive C | Select-Object Free'
+#    register: rawcsize
+
+#  # Convert disk size in Gigabytes
+#  - name: Convert system disk into various formats and export
+#    vars:
+#      disk_out_free: '{{ rawcsize.stdout[0] }}'
+#      disk_int: '{{ rawcsize.stdout | int }}'
+#      disk_gb: '{{ disk_int | int}}'
+#    debug:
+#      msg: 'rawcsize.stdout: {{(rawcsize.stdout)}} disk_out_free: {{(disk_out_free)}}  disk_int: {{(disk_int)}} disk_gb: {{(disk_gb)}}'
+
+
+
+  # - name: get disk free space
+  #   win_shell: Get-PsDrive c | ConvertTo-Json
+  #   register: output
+
+  # - name: extract free space
+  #   set_fact:
+  #     free_json: "{{ output.stdout|from_json}}"
+
+  # - name:
+  #   debug:
+  #     var: free_json.Free
+
+
+#  - name: Display disk space
+#    win_shell: Get-PSDrive | Select-Object Name, Used, Free, @{Name="Capacity";Expression={"{0:N2}" -f ($_.Used + $_.Free)/1GB}} | Format-Table -AutoSize
+#    register: disk_space
+#  - debug: var=disk_space.stdout_lines
+
+  - name: Get disk facts
+    community.windows.win_disk_facts:
+
+  - name: Output first disk size
+    debug:
+      var: ansible_facts.disks[0].size
+
+  - name: Convert first system disk into various formats
+    debug:
+      msg: '{{ disksize_gib }} vs {{ disksize_gib_human }}'
     vars:
-      Cdrive: '{{ (free_json.Free/1024|pow(3))|int }} GB'
+      # Get first system disk
+      disk: '{{ ansible_facts.disks|selectattr("system_disk")|first }}'
+
+      # Show disk size in Gibibytes
+      disksize_gib_human: '{{ disk.size|filesizeformat(true) }}'   # returns "223.6 GiB" (human readable)
+      disksize_gib: '{{ (disk.size/1024|pow(3))|round|int }} GiB'  # returns "224 GiB" (value in GiB)
+
+      # Show disk size in Gigabytes
+      disksize_gb_human: '{{ disk.size|filesizeformat }}'        # returns "240.1 GB" (human readable)
+      disksize_gb: '{{ (disk.size/1000|pow(3))|round|int }} GB'  # returns "240 GB" (value in GB)
+
+  - name: get disk physical_disk and partition facts on the target
+    win_disk_facts:
+      filter:
+        - physical_disk
+        - partitions

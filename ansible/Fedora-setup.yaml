@@ -9,7 +9,7 @@
 # - Can see physical hosts on the network, or VMs on the same host as the one running the Ansible server
 
 - name: Ansible configure Fedora machines for KF use
-  hosts: swift3
+  hosts: fedoraworkstation
   become: true
   tasks:
 ######  Install various file sharing packages if they aren't there
@@ -112,10 +112,3 @@
         name: '*'
         state: latest
 #  Command to run this from Ansible server is     -->      ansible-playbook PlaybookName.yaml --extra-vars 'ansible_become_pass=PassWordHere
-
-# The files in the /backups/NFS directory are, they shouldn't be needed, I've worked out the editing files from the playbook
-# autofs.conf
-# auto.master
-# auto.nfs
-# auto.smb
-# nfs.conf

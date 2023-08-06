@@ -1,4 +1,3 @@
-#
 # Gathers facts for the machines in the Linux group (a.k.a Delegating facts)
 # This works now, but doesn't return much -- kf
 # - name: Gather info
@@ -12,9 +11,8 @@
 #
 # This will work on hosts that use apt
 # Still need to put the files where they really belong, but it stages them in /backups/NFS for now
-
 - name: Ubuntu host config
-  hosts: mint
+  hosts: mint1
   become: true
   tasks:
     - name: Create /backups directory if it does not exist
@@ -22,6 +20,15 @@
         path: /backups
         state: directory
         mode: '0766'
+#updates
+    - name: Run the equivalent of "apt-get update" as a separate step
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Update all packages to their latest version
+      ansible.builtin.apt:
+        name: "*"
+        state: latest   
 # Install the NFS and AutoFS packages on ubuntu with apt
     - name: Install packages
       ansible.builtin.apt:
@@ -53,11 +60,11 @@
         group: kevin
         mode: 0775
 # Share the /code directory as an NFS export
-    - name: Export /code
-      ansible.builtin.lineinfile:
-        path: /etc/exports
-        line: /code  *(rw,sync,no_subtree_check)
-        state: present
+#    - name: Export /code
+#      ansible.builtin.lineinfile:
+#        path: /etc/exports
+#        line: /code  *(rw,sync,no_subtree_check)
+#        state: present
 # Create /nfs, this will be used by autofs as the starting point
     - name: Create nfs directory
       ansible.builtin.file:
@@ -105,9 +112,9 @@
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
       loop:
-        - { regexp: '^192.168.1.233', line: '192.168.1.233 pavillion pavillion.flanagannc.net' }
+        - { regexp: '^192.168.1.233', line: '192.168.1.233 pavillion' }
         - { regexp: '^192.168.122.12', line: '#192.168.122.12 fedoraworkstation' }
-        - { regexp: '^192.168.122.111', line: '#192.168.122.111 mint' }
+        - { regexp: '^192.168.122.242', line: '#192.168.122.242 mint1' }
         - { regexp: '^192.168.1.104', line: '192.168.1.104 envy' }
 #    - name: "Replace line in hosts with envy"
 #      replace: 
