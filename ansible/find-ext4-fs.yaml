@@ -1,9 +1,15 @@
 - name: Check disk space
   hosts: fedora38
   tasks:
-    - name: Show filesystems that are ext4
+    - name: Show filesystems
       debug:
-        msg: "{{ item.mount }} - {{ item.device }}"
-      when: item.fstype == 'ext4'
+#        msg: "{{ item.mount }} - {{ item.device }}"
+        msg:  "{{ item.size_available }}"
+# The when statement is a conditional, a bit like an if
+# 
+#      when: item.fstype == 'ext4'  
+      when: item.mount == '/boot'
+#
+# Here's the loop that walks through all of the mounts 
       loop: "{{ ansible_facts.mounts }}"
-
+    
