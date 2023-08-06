@@ -3,6 +3,7 @@
 ## Computers
 - Linux on a computer with a a somewhat current proessor and at least 8GB of RAM and 512 GB of storage, 16GB is preferred.  These can be had for a little more than $200. [Fedora](https://fedoraproject.org/#editions)
     - Visual Studio code on the host computer [VSCode](https://code.visualstudio.com/docs/setup/linux)
+      - Markdown all in one - VS Code extention
     - [Virtualazition and VMM](https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-virtualization/)
     - Fedora Server VM
     - Fedora workstaion VM
