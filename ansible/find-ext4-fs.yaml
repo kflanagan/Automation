@@ -1,5 +1,5 @@
 - name: Check disk space
-  hosts: fedora38
+  hosts: debian
   tasks:
     - name: Show filesystems
       debug:
@@ -8,7 +8,8 @@
 # The when statement is a conditional, a bit like an if
 # 
 #      when: item.fstype == 'ext4'  
-      when: item.mount == '/boot'
+      when: item.fstype == 'autofs'
+#      when: item.mount == '/boot'
 #
 # Here's the loop that walks through all of the mounts 
       loop: "{{ ansible_facts.mounts }}"

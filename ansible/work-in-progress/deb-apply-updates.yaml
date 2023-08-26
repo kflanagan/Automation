@@ -1,0 +1,24 @@
+# apply all updates to a debian based system
+# Then shut it down
+# Careful with the shutdown, it's immediate
+  - name: Update Debian based systems
+    hosts: mint1 
+    become: true
+    tasks:
+
+#updates
+    - name: Run the equivalent of "apt-get update" as a separate step
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Update all packages to their latest version
+      ansible.builtin.apt:
+        name: "*"
+        state: latest   
+
+    - name: Unconditionally shut down the machine with all defaults
+      community.general.shutdown:
+#
+# if you want a pause before shutdown, there's this option 
+#
+#      delay: 60
