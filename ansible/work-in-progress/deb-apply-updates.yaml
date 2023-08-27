@@ -2,7 +2,7 @@
 # Then shut it down
 # Careful with the shutdown, it's immediate
   - name: Update Debian based systems
-    hosts: mint1 
+    hosts: debian
     become: true
     tasks:
 
@@ -16,8 +16,8 @@
         name: "*"
         state: latest   
 
-    - name: Unconditionally shut down the machine with all defaults
-      community.general.shutdown:
+#    - name: Unconditionally shut down the machine with all defaults
+#      community.general.shutdown:
 #
 # if you want a pause before shutdown, there's this option 
 #
