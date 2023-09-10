@@ -2,7 +2,7 @@
 # Then shut it down
 # Careful with the shutdown, it's immediate
   - name: Update Debian based systems
-    hosts: mint
+    hosts: mint1, debian, mint
     become: true
     tasks:
 
