@@ -9,7 +9,7 @@
 # - Can see physical hosts on the network, or VMs on the same host as the one running the Ansible server
 
 - name: Ansible configure Fedora machines for KF use
-  hosts: alma9
+  hosts: fedora.lan
   become: true
   tasks:
 ######  Install various file sharing packages if they aren't there
