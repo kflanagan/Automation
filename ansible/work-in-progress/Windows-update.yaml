@@ -1,5 +1,5 @@
 - name: Apply all updates
-  hosts: Win10Virt
+  hosts: win10-virt
   vars:
     # contents: "{{ lookup('file','c://temp/Winupdate_log.txt') }}"
   tasks:

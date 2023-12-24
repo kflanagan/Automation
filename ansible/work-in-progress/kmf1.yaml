@@ -1,11 +1,20 @@
 - name: Kevin Test 1
-  hosts: envy
+  hosts: centosstream
+  become: yes
+#  vars_files:
+#    - /code/Automation/ansible/kmf.yml
+#  vars:
+#    ansible_become_pass: "{{ su_password }}"
   tasks:
-  - name: Check to see that autofs is started
-    ansible.builtin.service:
-      name: autofs.service
-      state: started
-#  - name: size of memory
-#    ansible_distribution
-
-
+    - name: Install the latest version of autofs
+      ansible.builtin.dnf:
+        name: 'autofs'
+        state: present
+    - name: Make sure the autofs service is enabled
+      ansible.builtin.service:
+        name: autofs.service
+        enabled: true
+    - name: Check to see that autofs is started
+      ansible.builtin.service:
+        name: autofs.service
+        state: started

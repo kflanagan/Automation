@@ -1,10 +1,25 @@
 - name: Play with facts
-  hosts: debian
+  hosts: fedorakde
   tasks:
-    - name: Show ip
-      debug:
+#  - name: Show ip
+#      debug:
 #        msg: "{{ item.mount }} - {{ item.device }}"
-        msg:  "{{ ansible_facts.default_ipv4.address }}"
+#        msg:  "{{ ansible_facts.default_ipv4.address }}"
+    - name: Print some facts
+      ansible.builtin.debug:
+# This line will get all facts
+        var: ansible_facts
+    - name: Print some facts
+      ansible.builtin.debug:
+# This line will get all facts
+#        var: ansible_facts
+#See the facts for what you can get out
+#        msg:  "{{ ansible_facts.user_id }}"
+        msg:  "{{ ansible_facts.memory_mb }}"
+
+    - name: Print some facts
+      ansible.builtin.debug:
+        msg:  "{{ ansible_facts.user_id }}"
 # The when statement is a conditional, a bit like an if
 # 
 #      when: item.fstype == 'ext4'  
@@ -14,3 +29,5 @@
 #      loop: "{{ ansible_facts.XXXX }}"
 # This is helpful for ideas as to what info is there
 # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_vars_facts.html
+
+
