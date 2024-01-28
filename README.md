@@ -1,2 +1,2 @@
 # Automation files
-As I work on home automation things, I'll add to this
+The vast majority of this work is in the ansible directory, other platforms may be added, but it's unlikely at this point.
