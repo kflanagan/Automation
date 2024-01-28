@@ -9,7 +9,7 @@
 # - Can see physical hosts on the network, or VMs on the same host as the one running the Ansible server
 
 - name: Ansible configure Fedora machines for KF use
-  hosts: alma9
+  hosts: fedorakde
   become: true
   tasks:
 ######  Install various file sharing packages if they aren't there
@@ -24,9 +24,24 @@
         path: /backups
         state: directory
         mode: '0755'
+##### Create directory for shared code
+    - name: Create code directory
+      ansible.builtin.file:
+        path: /code
+        state: directory
+        owner: kevin
+        group: kevin
+        mode: 0775
+    - name: Mount an NFS volume
+      ansible.posix.mount:
+        src: 192.168.1.104:/code
+        path: /code
+        opts: rw,sync,hard
+        state: mounted
+        fstype: nfs
     - name: Copy config files to /backups/NFS
       ansible.builtin.copy:
-        src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
+        src: /code/NFS
         dest: /backups
         owner: root
         group: root
@@ -37,14 +52,7 @@
       ansible.builtin.dnf:
         name: httpd
         state: absent
-##### Create directory for shared code
-    - name: Create code directory
-      ansible.builtin.file:
-        path: /code
-        state: directory
-        owner: kevin
-        group: kevin
-        mode: 0775
+
 #####  Update /etc/exports to Export /code and /media/nfs as NFS
     - name: Update /etc/exports
       ansible.builtin.lineinfile:

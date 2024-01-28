@@ -1,6 +1,6 @@
 
 - name: Ansible apply updates to Fedora machines 
-  hosts: fedorakde, fedoraws, fedora, centosstream, rocky9, fedoraserver
+  hosts: fedorakde, fedoraws, centosstream, rocky9, almaliux, alma9
   become: true
   tasks:
 
@@ -10,3 +10,5 @@
       ansible.builtin.dnf:
         name: '*'
         state: latest
+    - name: Unconditionally shut down the machine with all defaults
+      community.general.shutdown:

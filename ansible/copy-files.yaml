@@ -10,10 +10,9 @@
   tasks:
 
 
-
     - name: Copy config files
       ansible.builtin.copy:
-        src: /home/kevin/gitrepos/Linux-DesktopStuff/NFS
+        src: /code/NFS
         dest: /backups
         owner: root
         group: root
