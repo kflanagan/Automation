@@ -1,0 +1,35 @@
+# UCD work
+- name: UCD cleanup and restart
+  hosts: fedora
+  become: true
+  tasks:
+####################################
+# This will be useful in the installation work
+#    - name: Create a directory if it does not exist
+#      ansible.builtin.file:
+#        path: /opt/ibm-ucd/var/work
+#        state: directory
+#        mode: '0755'
+#    - name: Copy config files
+#      ansible.builtin.copy:
+#        src: /tmp/ucd-install
+#        dest: /opt/ibm-ucd
+#        owner: kevin
+#        group: kevin
+#        mode: 0644
+#        follow: true
+#########################
+    - name: Cleanup UCD work direcory
+      ansible.builtin.find:
+        paths: /opt/ibm-ucd/var/work/
+        file_type: any
+      register: files_to_delete
+    - name: Delete files
+      ansible.builtin.file:
+        path: '{{ item.path }}'
+        state: absent
+      with_items: "{{ files_to_delete.files }}"
+#    - name: Restart UCD agent
+#      ansible.builtin.service:
+#        name: ucd-agent
+#        state: restarted

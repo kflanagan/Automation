@@ -1,5 +1,5 @@
 - name: Play with facts
-  hosts: fedorakde
+  hosts: fedora
   tasks:
 #  - name: Show ip
 #      debug:
@@ -19,9 +19,13 @@
 
     - name: Print some facts
       ansible.builtin.debug:
-        msg:  "{{ ansible_facts.user_id }}"
-# The when statement is a conditional, a bit like an if
-# 
+        msg: "{{ ansible_facts.mounts }}"
+#        msg: "{{ansible_facts.mounts.mount | selectattr('mount','equalto',item.mount) | list | first }}"
+
+
+
+# # The when statement is a conditional, a bit like an if
+# # 
 #      when: item.fstype == 'ext4'  
 #      when: item.mount == '/boot'
 #
