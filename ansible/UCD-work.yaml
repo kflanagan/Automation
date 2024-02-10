@@ -1,7 +1,12 @@
 # UCD work
 - name: UCD cleanup and restart
   hosts: fedora
+  gather_facts: true
   become: true
+  vars:
+    ansible_net_filesystems_info:
+      'opt:':
+        spacefree_kb: 50000
   tasks:
 ####################################
 # This will be useful in the installation work
@@ -19,16 +24,16 @@
 #        mode: 0644
 #        follow: true
 #########################
-    - name: Cleanup UCD work direcory
-      ansible.builtin.find:
-        paths: /opt/ibm-ucd/var/work/
-        file_type: any
-      register: files_to_delete
-    - name: Delete files
-      ansible.builtin.file:
-        path: '{{ item.path }}'
-        state: absent
-      with_items: "{{ files_to_delete.files }}"
+     - name: Cleanup UCD work direcory
+       ansible.builtin.find:
+         paths: /opt/ibm-ucd/var/work/
+         file_type: any
+       register: files_to_delete
+     - name: Delete files
+       ansible.builtin.file:
+         path: '{{ item.path }}'
+         state: absent
+       with_items: "{{ files_to_delete.files }}"
 #    - name: Restart UCD agent
 #      ansible.builtin.service:
 #        name: ucd-agent
