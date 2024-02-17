@@ -1,0 +1,28 @@
+---
+- name: Get /var size on all fedora hosts
+  hosts: fedora
+  gather_facts: false
+
+  tasks:
+    - name: Fetching /var size on hosts
+      ansible.builtin.command: du -s /var
+      register: du_var
+      become: true
+      changed_when: false
+
+    # This is absolutely needed as registers don't survive current play
+    # See next play on localhost only
+    - name: Store actual size for hosts in a fact
+      vars:
+        size_regex: >-
+          ^(\d+)\s*/var
+        replace: >-
+          \g<1>
+      ansible.builtin.set_fact:
+        var_size_bytes: "{{ du_var.stdout | regex_replace(size_regex, replace) }}"
+
+    # As a first example, demonstrate we can simply display sizes
+    # with the natural play host loop
+    - name: Show human readable size of /var on each host
+      ansible.builtin.debug:
+        msg: "/var size is: {{ var_size_bytes | int | human_readable }}"
