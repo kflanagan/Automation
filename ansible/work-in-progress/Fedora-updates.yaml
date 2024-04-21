@@ -1,6 +1,5 @@
-- name: Ansible apply updates to Fedora machines 
-  hosts: fedora
-  # fedorakde, fedoraws, fedora, centosstream, rocky9, fedoraserver
+- name: Ansible apply updates to Fedora machines
+  hosts: fedora, fedorakde, fedoraws, fedora, centosstream, rocky9
   become: true
   tasks:
 ###############  Update all packages

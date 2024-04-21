@@ -1,16 +1,34 @@
 ---
 - name: Look for code
-  hosts: fedora
+  hosts: pav-fedoraserver
   become: true
 
   tasks:
-    - name: Does code exist
-      ansible.builtin.stat:
-        path: "/tmp/code"
-      register: register_name
-    - name: Remove contents of directory
-      ansible.builtin.file:
-        path: /tmp/code/*
-        state: absent
-      when: register_name.stat.exists
+    - setup:
+        gather_subset:
+          - distribution
+          - mounts
+#    - debug:
+#        var: ansible_distribution
+#    - debug:
+#        var: ansible_mounts
+    - name: Check if /code is mounted
+      shell: mount | grep '/code'
+      register: mount_output
+    - name: Print mount status
+      debug:
+        msg: "/code is {{ 'mounted' if mount_output.stdout else 'not mounted' }}"
+#    - name: Remove contents of directory
+#      ansible.builtin.file:
+#        path: /tmp/code/
+#        state: absent
+#      when: register_name.stat.exists
+#    - name: Create directory again
+#      ansible.builtin.file:
+#        path: "/tmp/code"
+#        state: directory
+#        owner: kevin
+#        group: kevin
+#        mode: '0644'
+
 ...
