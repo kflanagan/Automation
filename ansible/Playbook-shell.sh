@@ -6,5 +6,5 @@
 # ansible-vault create passwd.yaml
 
 # See /etc/ansible/hosts for the variables syntax and see the line below to call the vault
-ansible-playbook   --ask-vault-pass --extra-vars '@passwd.yaml' $1 
+ansible-playbook -v  --ask-vault-pass --extra-vars '@passwd.yaml' $1 
 
