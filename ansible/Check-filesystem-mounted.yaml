@@ -1,8 +1,7 @@
 ---
 - name: Look for code
-  hosts: pav-fedoraserver
   become: true
-
+  hosts: fedoraserver
   tasks:
     - debug:
         var: ansible_distribution
