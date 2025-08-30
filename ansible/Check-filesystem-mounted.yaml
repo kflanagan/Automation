@@ -1,0 +1,22 @@
+---
+- name: Look for code
+  become: true
+  hosts: fedoraserver
+  tasks:
+    - debug:
+        var: ansible_distribution
+    - debug:
+        var: ansible_mounts
+    - name: Remove contents of directory
+      ansible.builtin.file:
+        path: /tmp/code/
+        state: absent
+      when: register_name.stat.exists
+    - name: Create directory again
+      ansible.builtin.file:
+        path: "/tmp/code"
+        state: directory
+        owner: kevin
+        group: kevin
+        mode: '0644'
+...
