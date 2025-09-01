@@ -1,0 +1,12 @@
+action: notify.mobie_app_kevin_f_work 
+data:
+  message: "Actionable Notification"
+  data:
+    push:
+      category: "ACTIONABLE"
+    actions:
+      - action: "alarm"
+        title: "Sound alarm"
+      - action: "URI"
+        uri: "https://6pnxaz1zfghw3x47xtbfpvisat9ksq8e.ui.nabu.casa/dashboard-kevin1/0"      
+        title: "Open dashboard"
