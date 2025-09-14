@@ -1,3 +1,10 @@
 *.rpm
 ansible/passwd.yaml
 ansible/*.txt
+bootc/Cent-Stream/cent
+bootc/Cent-Stream/config.toml
+bootc/Cent-Stream/start-cent
+bootc/Cent-Stream/output/manifest-qcow2.json
+bootc/Cent-Stream/output/qcow2/disk.qcow2
+bootc/image-builder/builder
+bootc/tutorial/newfile
