@@ -1,0 +1,17 @@
+# in this, replace podman with the host that you configured in the ssh monitor integration
+
+
+
+type: entities
+entities:
+  - entity: sensor.podman_cores
+  - entity: sensor.podman_cpu
+  - entity: sensor.podman_disk
+  - entity: sensor.podman_load_1
+  - entity: sensor.podman_load_5
+  - entity: sensor.podman_load_15
+  - entity: sensor.podman_memory
+  - entity: sensor.podman_network_in
+  - entity: sensor.podman_network_out
+  - entity: sensor.podman_ram
+  - entity: sensor.podman_uptime
