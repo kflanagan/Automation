@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Yet to be tested, this script is used to backup the Proxmox VE configuration files to a specified directory
+
+# This script is used to backup the Proxmox VE configuration files to a specified directory
+# It will create a tarball of the configuration files and save it to the specified directory
+# Usage: ./pve-config-backup.sh /path/to/backup/directory   
+
+
+# Check if the number of arguments is zero
+
+
+#if [ "$#" -eq 0 ]; then
+#    echo "Error: No arguments provided, this requrires the directory to save the backup" >&2
+#    echo "Usage: $0 <argument>" >&2
+#    exit 1
+#fi  
+
+BACKUP_DIR="/tmp/pve-config-backups"
+# Create the directory if it doesn't exist
+mkdir -p "$BACKUP_DIR"
+echo "Backup directory: $BACKUP_DIR"
+
+# Create a tarball of the Proxmox VE configuration files
+TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
+BACKUP_FILE="$BACKUP_DIR/pve-config-backup-$TIMESTAMP.tar.gz"
+tar -czvf "$BACKUP_FILE" /etc/pve   
+echo "Proxmox VE configuration files backed up to $BACKUP_FILE" 
+
