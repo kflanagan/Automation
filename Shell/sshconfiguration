@@ -1,0 +1,4 @@
+Host ubuntu-vm
+    HostName ubuntu-vm
+    User kevin
+

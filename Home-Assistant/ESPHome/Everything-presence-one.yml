@@ -1,0 +1,42 @@
+substitutions:
+  name: everything-presence-one
+  friendly_name: Everything Presence One
+packages:
+  Everything Smart Technology.Everything Presence One: github://everythingsmarthome/everything-presence-one/everything-presence-one-sen0609-ble.yaml@main
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: !secret api_key
+output:
+  - platform: gpio
+    pin: GPIO15
+    id: led_output
+    inverted: False
+
+#light:
+#  - platform: binary
+#    name: "Presence Sensor LED"
+#    output: led_output
+#    restore_mode: ALWAYS_OFF
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+# What other sensors can be exposed by the device? Check the documentation for your device to see what sensors are available.
+# For example, if the device has a temperature sensor, you can add it like this:
+sensor:
+  - platform: everything-presence-one
+    name: "Presence Sensor Temperature" 
+    id: presence_sensor_temperature
+  - platform: everything-presence-one
+    name: "Presence Sensor Humidity"
+    id: presence_sensor_humidity  
+
+# Enable logging
+logger:
+  level: DEBUG  
+

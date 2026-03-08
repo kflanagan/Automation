@@ -42,3 +42,20 @@ sensor:
     humidity:
       name: "Living Room Humidity"
     update_interval: 60s
+
+  # onboard/ESP-specific sensors
+  - platform: uptime
+    name: "NodeMCU Uptime"
+
+  - platform: wifi_signal
+    name: "NodeMCU WiFi Signal"
+
+  - platform: esp8266_adc
+    pin: A0
+    name: "NodeMCU Analog"
+
+  - platform: wifi_info
+    ip_address:
+      name: "NodeMCU IP"
+    ssid:
+      name: "NodeMCU SSID"

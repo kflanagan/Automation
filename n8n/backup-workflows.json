@@ -1,0 +1,46 @@
+{
+  "name": "Backup n8n Workflows to /code",
+  "nodes": [
+    {
+      "parameters": {
+        "cronExpression": "0 0 * * *",
+        "options": {}
+      },
+      "name": "Nightly Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "mkdir -p /code/Automation/n8n\n# Check /code is a mountpoint (returns 0 if mounted)\nif mountpoint -q /code; then\n  # Try exporting all workflows into a single file; fall back to per-workflow export if CLI differs\n  if command -v n8n >/dev/null 2>&1; then\n    n8n export:workflow --all --output=/code/Automation/n8n/workflows.json || n8n export:workflow --all --separate --output=/code/Automation/n8n\n  else\n    echo \"n8n CLI not available; aborting export\"\n    exit 1\n  fi\nelse\n  echo \"/code is not mounted; skipping export\"\n  exit 0\nfi"
+      },
+      "name": "Export Workflows",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Nightly Cron": {
+      "main": [
+        [
+          {
+            "node": "Export Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "tags": []
+}
