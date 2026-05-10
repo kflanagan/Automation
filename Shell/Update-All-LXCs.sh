@@ -30,7 +30,7 @@ pct list | tail -n +2 | while read line; do
   CTID=$(echo "$line" | awk '{print $1}')
   NAME=$(echo "$line" | awk '{print $2}')
   echo "======================== Updating container $CTID: $NAME ========================"
-  if ! pct exec $CTID -- bash -c "apt update && apt upgrade -y"; then
+  if ! pct exec $CTID -- bash -c "apt update && apt upgrade -y && apt autoremove -y"; then
     echo "ERROR: Container $CTID ($NAME) failed to update. Continuing with next container."
   fi
 done
