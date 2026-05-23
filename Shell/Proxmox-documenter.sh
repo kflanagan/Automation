@@ -56,6 +56,7 @@ get_ct_details() {
     diskfree=$(pct df $ctid | grep "rootfs" | awk '{print $6}')
     startup=$(pct config $ctid | grep "^startup" | awk '{print $2}')
     privileged=$(pct config $ctid | grep "^unprivileged" | awk '{print $2}')
+    uptime=$(pct exec $ctid uptime 2>/dev/null | awk -F': ' '{print $1}' | cut -d',' -f1)
     if [[ "$privileged" == "1" ]]; then
         privileged_mode="Unprivileged"
     else
@@ -68,6 +69,7 @@ get_ct_details() {
     echo "- **Disk Free percentage (rootfs)**: $diskfree percent"
     echo "- **Startup**: $startup"
     echo "- **Privilege Mode**: $privileged_mode"
+    echo "- **Uptime**: $uptime"
     echo ""
     echo "### Status:"
     pct status $ctid
