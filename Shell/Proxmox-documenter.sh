@@ -52,6 +52,9 @@ get_ct_details() {
     memory=$(pct config $ctid | grep "^memory" | awk '{print $2}')
     swap=$(pct config $ctid | grep "^swap" | awk '{print $2}')
     rootfs=$(pct config $ctid | grep "^rootfs" | awk -F',' '{print $1}' | cut -d' ' -f2)
+    rootfssize=$(pct config $ctid | grep "^rootfs" | awk -F',' '{print $2}' | cut -d' ' -f2)
+    diskfree=$(pct df $ctid | grep "rootfs" | awk '{print $6}')
+    startup=$(pct config $ctid | grep "^startup" | awk '{print $2}')
     privileged=$(pct config $ctid | grep "^unprivileged" | awk '{print $2}')
     if [[ "$privileged" == "1" ]]; then
         privileged_mode="Unprivileged"
@@ -61,6 +64,9 @@ get_ct_details() {
     echo "- **Memory**: ${memory}MB"
     echo "- **Swap**: ${swap}MB"
     echo "- **Disk (rootfs)**: $rootfs"
+    echo "- **Disk Size (rootfs)**: $rootfssize"
+    echo "- **Disk Free percentage (rootfs)**: $diskfree percent"
+    echo "- **Startup**: $startup"
     echo "- **Privilege Mode**: $privileged_mode"
     echo ""
     echo "### Status:"
