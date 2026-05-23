@@ -3,7 +3,7 @@
 # Proxmox Configuration Documenter
 # This script generates documentation for VMs and containers on a Proxmox host
 
-OUTPUT_FILE="proxmox-config.md"
+OUTPUT_FILE="/code/Documents/proxmox-config.md"
 
 # Function to decode URL-encoded strings
 decode_url() {
@@ -13,26 +13,14 @@ decode_url() {
 # Function to get VM details
 get_vm_details() {
     local vmid=$1
-    local memory=""
-    
-    # Get memory from config
-    memory=$(qm config $vmid 2>/dev/null | grep "^memory:" | awk '{print $2}')
-    [[ -z "$memory" ]] && memory="N/A"
-    
     echo "## VM ID: $vmid"
     echo ""
     echo "### Configuration:"
     qm config $vmid | while IFS=': ' read -r key value; do
-        if [[ "$key" == "memory" ]]; then
-            continue  # Skip memory from config, will add after cores
-        fi
         if [[ "$key" == "description" ]]; then
             value=$(decode_url "$value")
         fi
         echo "- **$key**: $value"
-        if [[ "$key" == "cores" ]]; then
-            echo "- **memory**: $memory MB"
-        fi
     done
     echo ""
     echo "### Status:"
@@ -50,43 +38,30 @@ get_vm_details() {
 # Function to get Container details
 get_ct_details() {
     local ctid=$1
-    local hostname="N/A"
-    local memory=""
-    local name=""
-    
-    # Get hostname if container is running
-    if pct status $ctid 2>/dev/null | grep -q running; then
-        hostname=$(pct exec $ctid "hostname" 2>/dev/null | grep -oP '^[^\s]+' | head -1)
-        [[ -z "$hostname" ]] && hostname="N/A"
-    fi
-    
-    # Get memory from config
-    memory=$(pct config $ctid 2>/dev/null | grep "^memory:" | awk '{print $2}')
-    [[ -z "$memory" ]] && memory="N/A"
-    
-    # Get name from config
-    name=$(pct config $ctid 2>/dev/null | grep "^name:" | awk '{print $2}')
-    [[ -z "$name" ]] && name="N/A"
-    
     echo "## Container ID: $ctid"
-    echo "**Name:** $name"
     echo ""
     echo "### Configuration:"
     pct config $ctid | while IFS=': ' read -r key value; do
-        if [[ "$key" == "memory" ]]; then
-            continue  # Skip memory from config, will add after cores
-        fi
-        if [[ "$key" == "name" ]]; then
-            continue  # Skip name from config, will add after ID
-        fi
         if [[ "$key" == "description" ]]; then
             value=$(decode_url "$value")
         fi
         echo "- **$key**: $value"
-        if [[ "$key" == "cores" ]]; then
-            echo "- **memory**: $memory MB"
-        fi
     done
+    echo ""
+    echo "### Resources:"
+    memory=$(pct config $ctid | grep "^memory" | awk '{print $2}')
+    swap=$(pct config $ctid | grep "^swap" | awk '{print $2}')
+    rootfs=$(pct config $ctid | grep "^rootfs" | awk -F',' '{print $1}' | cut -d' ' -f2)
+    privileged=$(pct config $ctid | grep "^unprivileged" | awk '{print $2}')
+    if [[ "$privileged" == "1" ]]; then
+        privileged_mode="Unprivileged"
+    else
+        privileged_mode="Privileged"
+    fi
+    echo "- **Memory**: ${memory}MB"
+    echo "- **Swap**: ${swap}MB"
+    echo "- **Disk (rootfs)**: $rootfs"
+    echo "- **Privilege Mode**: $privileged_mode"
     echo ""
     echo "### Status:"
     pct status $ctid
@@ -104,7 +79,6 @@ get_ct_details() {
 {
     echo "# Proxmox Configuration Documentation"
     echo "Generated on $(date)"
-    echo "---"
     echo ""
     
     echo "## Virtual Machines"
@@ -121,14 +95,21 @@ get_ct_details() {
     echo "## Containers"
     echo ""
     
-    # Get list of containers
-    pct list | tail -n +2 | while read -r line; do
-        ctid=$(echo $line | awk '{print $1}')
-        if [[ -n "$ctid" && "$ctid" != "VMID" ]]; then
-            get_ct_details $ctid
-        fi
-    done
+    # # Get list of containers
+    # pct list | tail -n +2 | while read -r line; do
+    #     ctid=$(echo $line | awk '{print $1}')
+    #     if [[ -n "$ctid" && "$ctid" != "VMID" ]]; then
+    #         get_ct_details $ctid
+    #     fi
+    # done
     
+# Get list of containers
+while IFS= read -r ctid; do
+    if [[ -n "$ctid" && "$ctid" != "VMID" ]]; then
+        get_ct_details "$ctid"
+    fi
+done < <(pct list | tail -n +2 | awk '{print $1}')
+
     echo "## Host Disk Space Summary"
     echo ""
     df -h | while read -r line; do
@@ -138,4 +119,5 @@ get_ct_details() {
     
 } > "$OUTPUT_FILE"
 
+chmod 666 "$OUTPUT_FILE"
 echo "Documentation generated in $OUTPUT_FILE"
