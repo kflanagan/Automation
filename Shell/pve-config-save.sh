@@ -6,8 +6,13 @@
 
 
 
-
+DEFAULT_DEST_HOST="ubuntu-vm"
 BACKUP_DIR="/tmp/pve-config-backups"
+TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
+HOSTNAME=$(hostname)
+BACKUP_FILE="$BACKUP_DIR/pve-config-backup-$HOSTNAME-$TIMESTAMP.tar"
+DEST_HOST="${DEST_HOST:-$DEFAULT_DEST_HOST}"
+DEST_PATH="/backups"
 # Create the directory if it doesn't exist
 mkdir -p "$BACKUP_DIR"
 echo "Backup directory: $BACKUP_DIR"
@@ -19,9 +24,12 @@ then
     apt-get update && apt-get install -y sshpass
 fi
 
+# First clean up old backups in the backup directory (optional, you can keep them if you want)
+find "$BACKUP_DIR" -type f -name "pve-config-backup-*.tar.gz" -delete
+echo "Old backups cleaned up from $BACKUP_DIR"
+
 # Create a tarball of the Proxmox VE configuration files
-TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
-BACKUP_FILE="$BACKUP_DIR/pve-config-backup-$TIMESTAMP.tar"
+
 tar -cvf "$BACKUP_FILE" /etc/pve   
 echo "Proxmox VE configuration files backed up to $BACKUP_FILE" 
 
@@ -40,11 +48,15 @@ tar -rvf "$BACKUP_FILE" /etc/resolv.conf
 # Compress the backup
 gzip $BACKUP_FILE 
 # Move the backup to ubuntu-vm
-echo "Moving backup to ubuntu-vm:/backups/"
-read -sp "Enter root password for ubuntu-vm: " ROOT_PASSWORD
+
+# Destination host and path for remote backups (change DEFAULT_DEST_HOST as needed)
+
+
+echo "Moving backup to ${DEST_HOST}:${DEST_PATH}/"
+read -sp "Enter root password for ${DEST_HOST}: " ROOT_PASSWORD
 echo
-sshpass -p "$ROOT_PASSWORD" scp "$BACKUP_FILE.gz" root@ubuntu-vm:/backups/
-echo "Backup moved to ubuntu-vm:/backups/"
+sshpass -p "$ROOT_PASSWORD" scp "$BACKUP_FILE.gz" root@"$DEST_HOST":"${DEST_PATH}/"
+echo "Backup moved to ${DEST_HOST}:${DEST_PATH}/"
 
 echo "Backup completed successfully."
 
