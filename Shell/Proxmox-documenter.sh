@@ -3,7 +3,9 @@
 # Proxmox Configuration Documenter
 # This script generates documentation for VMs and containers on a Proxmox host
 
-OUTPUT_FILE="/code/Documents/proxmox-config.md"
+
+HOST_SHORTNAME=$(hostname -s)
+OUTPUT_FILE="/code/Documents/proxmox-${HOST_SHORTNAME}.md"
 
 # Function to decode URL-encoded strings
 decode_url() {
