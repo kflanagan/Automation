@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SOURCE_DIR="/nfsdata/plex/"
+SOURCE_DIR="/data/plex/"
 DEST_DIR="$SOURCE_DIR/MusicVideos"
 
 mkdir -p "$DEST_DIR"

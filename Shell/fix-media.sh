@@ -18,7 +18,7 @@ exec >>"$LOG" 2>&1
 
 
 
-TARGET="/nfsdata/plex/MusicVideos"
+TARGET="/data"
 
 if [ ! -d "$TARGET" ]; then
 	echo "Target not found: $TARGET" >&2

@@ -32,5 +32,3 @@ copy_and_remove() {
 
 copy_and_remove "$SOURCE_DIR/music" "$DESTINATION_MUSIC_DIR" "music"
 copy_and_remove "$SOURCE_DIR/videos" "$DESTINATION_VIDEO_DIR" "videos"
-
-
