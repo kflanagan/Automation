@@ -2,18 +2,20 @@
 set -euo pipefail
 
 # Configuration
-DEVICE="/dev/sdd1"
+# DEVICE="/dev/sdd1"
+DEVICE_UUID="4e7c979b-40b1-4946-86fb-f2989915dc85"
 MOUNT_POINT="/mnt/backup_disk"
 SOURCE_DIR="/data/plex"
 TARGET_DIR="${MOUNT_POINT}/data/plex"
-RSYNC_OPTIONS="-a --ignore-existing --info=progress2"
-LOG_FILE="/var/log/backup-media-pve.log"
+RSYNC_OPTIONS="-a --ignore-existing --out-format=%n"
+LOG_TIMESTAMP="$(date '+%Y%m%d-%H%M%S')"
+LOG_FILE="/var/log/backup-media-pve-${LOG_TIMESTAMP}.log"
 
 mkdir -p "${MOUNT_POINT}"
 mkdir -p "${TARGET_DIR}"
 
 if ! mountpoint -q "${MOUNT_POINT}"; then
-  mount "${DEVICE}" "${MOUNT_POINT}"
+  mount "UUID=${DEVICE_UUID}" "${MOUNT_POINT}"
   df -h "${MOUNT_POINT}"
 fi
 
@@ -35,7 +37,7 @@ else
 fi
 echo "$(date '+%Y-%m-%d %H:%M:%S') backup disk unmounted" | tee -a "${LOG_FILE}"
 
+#now prune existing log files to be less than 30 days old
+find /var/log/ -name "backup-media-pve-*.log" -type f -mtime +30 -exec rm -f {} \;
 
-
-# "ssh -i config/.ssh/id_rsa -o StrictHostKeyChecking=no root@192.168.1.113 '/root/backup-media-pve.sh'"
 
