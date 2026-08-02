@@ -12,18 +12,18 @@ if [ "$HOST_SHORTNAME" == "pve-mini" ]; then
     OUTPUT_FILE="/data/code/Documents/proxmox-${HOST_SHORTNAME}.md"
 
 #Another if for the host containing pavilion
-elif [[ "$HOST_SHORTNAME" == *"pavilion"* ]]; then
-    #Make sure that /code is mounted.
-    if [ -d "/code/Documents" ]; then
-        OUTPUT_FILE="/code/Documents/proxmox-${HOST_SHORTNAME}.md"
+    if [ -d "/data/code/Documents" ]; then
+        OUTPUT_FILE="/data/code/Documents/proxmox-${HOST_SHORTNAME}.md"
     else
         #mount -a if not mounted
        # mount -a
-        #check again if /code/Documents exists
-        if [ ! -d "/code/Documents" ]; then
-        echo "Error: /code/Documents directory does not exist. Please ensure the filesystem is mounted."
+        #check again if /data/code/Documents exists
+        if [ ! -d "/data/code/Documents" ]; then
+        echo "Error: /data/code/Documents directory does not exist. Please ensure the filesystem is mounted."
         exit 1
     fi
+    fi
+fi
 
 # Function to decode URL-encoded strings
 decode_url() {
