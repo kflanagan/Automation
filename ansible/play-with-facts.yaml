@@ -1,5 +1,5 @@
 - name: Play with facts
-  hosts: fedora
+  hosts: containers
   tasks:
     - name: Show ip
       ansible.builtin.debug:

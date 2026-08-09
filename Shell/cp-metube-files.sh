@@ -1,34 +1,70 @@
-# This shell script copies video files from a specified source directory to a destination directory on a remote server using SCP.
-# This would be used on the metube container
 #!/bin/bash
+set -euo pipefail
+
 # Define source and destination directories
-SOURCE_DIR="/opt/metube_downloads"
-DESTINATION_USER="root"
-DESTINATION_HOST="ubuntu-vm"
-DESTINATION_DIR="/nfsdata/plex/MusicVideos"
-# Define separate destination directories for music and videos
-DESTINATION_MUSIC_DIR="/nfsdata/plex/music"
-DESTINATION_VIDEO_DIR="/nfsdata/plex/MusicVideos"
+SOURCE_DIR="${SOURCE_DIR:-/opt/metube_downloads}"
+DESTINATION_MUSIC_DIR="${DESTINATION_MUSIC_DIR:-/media/downloads/music}"
+DESTINATION_VIDEO_DIR="${DESTINATION_VIDEO_DIR:-/media/downloads/MusicVideos}"
 
-copy_and_remove() {
-    local src_dir="$1"
-    local dst_dir="$2"
-    local label="$3"
+DRY_RUN=1
+if [[ "${1:-}" == "--no-dry-run" || "${1:-}" == "-n" ]]; then
+    DRY_RUN=0
+fi
 
-    if [ -d "$src_dir" ]; then
-        echo "Copying $label files from $src_dir to $DESTINATION_HOST:$dst_dir"
-        # Copy the CONTENTS of src_dir into the destination dir (don't create an extra top-level "music" or "videos" folder)
-        scp -r "$src_dir"/. "$DESTINATION_USER@$DESTINATION_HOST:$dst_dir"
-        if [ $? -eq 0 ]; then
-            rm -rf "$src_dir"
-            echo "$label files copied successfully and removed from $src_dir"
-        else
-            echo "Error copying $label files from $src_dir"
-        fi
+move_files_from_subdirs() {
+    local src_root="$1"
+    local dst_music="$2"
+    local dst_video="$3"
+    local dry_run="$4"
+
+    if [[ "$dry_run" -eq 1 ]]; then
+        echo "Dry run enabled; no files will be moved."
     else
-        echo "No $label source directory found at $src_dir"
+        mkdir -p "$dst_music" "$dst_video"
     fi
+
+    shopt -s nullglob
+    for subdir in "$src_root"/*; do
+        [ -d "$subdir" ] || continue
+
+        local name
+        name=$(basename "$subdir")
+
+        local target_dir=""
+        case "${name,,}" in
+            *music*)
+                target_dir="$dst_music"
+                ;;
+            *video*)
+                target_dir="$dst_video"
+                ;;
+            *)
+                echo "Skipping unrecognized subdirectory: $subdir"
+                continue
+                ;;
+        esac
+
+        if ! find "$subdir" -maxdepth 1 -type f -print -quit | grep -q .; then
+            echo "No files found in $subdir"
+            continue
+        fi
+
+        if [[ "$dry_run" -eq 1 ]]; then
+            echo "[dry-run] Would move files from $subdir to $target_dir"
+            find "$subdir" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' file; do
+                echo "[dry-run] would move $(basename "$file") -> $target_dir/"
+            done
+        else
+            echo "Moving files from $subdir to $target_dir"
+            find "$subdir" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' file; do
+                mv -v -- "$file" "$target_dir/"
+            done
+
+           # rmdir --ignore-fail-on-non-empty "$subdir" 2>/dev/null || true
+        fi
+    done
+    shopt -u nullglob
 }
 
-copy_and_remove "$SOURCE_DIR/music" "$DESTINATION_MUSIC_DIR" "music"
-copy_and_remove "$SOURCE_DIR/videos" "$DESTINATION_VIDEO_DIR" "videos"
+move_files_from_subdirs "$SOURCE_DIR" "$DESTINATION_MUSIC_DIR" "$DESTINATION_VIDEO_DIR" "$DRY_RUN"
+

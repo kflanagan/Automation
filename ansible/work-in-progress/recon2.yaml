@@ -1,7 +1,7 @@
 # This playbook gathers a bunch of info, mounts and other misc things
 # Then it checks to make sure that / has 3 GB free
 - name: Ansible Variable Example Playbook
-  hosts: Ubuntu
+  hosts: containers
   tasks:
     - name: Disk usage from command module
       ansible.builtin.command: df -h

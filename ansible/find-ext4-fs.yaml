@@ -1,5 +1,5 @@
 - name: Check disk space
-  hosts: fedorakde
+  hosts: containers
   tasks:
     - name: Show filesystems
       debug:
