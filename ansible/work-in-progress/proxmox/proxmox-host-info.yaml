@@ -1,0 +1,63 @@
+---
+- name: Test Proxmox API Connection
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    pve_host: "pve-mini"
+    pve_token_id: "ansible"
+    pve_token_secret: "d2317b2d-91fe-45ee-89db-990cfb040132"
+    api_user: "apiuser@pam"
+
+  tasks:
+    - name: Get Proxmox Cluster/Node Status
+      community.proxmox.proxmox_node_info:
+        api_host: "{{ pve_host }}"
+        api_user: "{{ api_user }}"
+        api_token_id: "{{ pve_token_id }}"
+        api_token_secret: "{{ pve_token_secret }}"
+        validate_certs: false # Set to true if using valid SSL certificates
+      register: pve_info
+
+    - name: Print Node Information
+      ansible.builtin.debug:
+        var: pve_info
+
+    - name: Add this host to the aggregated report
+      ansible.builtin.set_fact:
+        pve_report: "{{ pve_report | default([]) + [{ 'host': inventory_hostname, 'data': pve_info }] }}"
+      delegate_to: localhost
+#      run_once: true
+
+    - name: Display the Proxmox report
+      ansible.builtin.debug:
+        var: pve_report
+      delegate_to: localhost
+#      run_once: true
+
+    # - name: Restart container(stopped or mounted container you can't restart)
+    #   community.proxmox.proxmox:
+    #     node: pve-mini
+    #     api_host: "{{ pve_host }}"
+    #     api_user: "{{ api_user }}"
+    #     api_token_id: "{{ pve_token_id }}"
+    #     api_token_secret: "{{ pve_token_secret }}"
+    #     validate_certs: false
+    #     vmid: 102
+    #     state: restarted
+
+
+    - name: get container status (example)
+      community.proxmox.proxmox:
+        node: "{{ pve_host }}"
+        api_host: "{{ pve_host }}"
+        api_user: "{{ api_user }}"
+        api_token_id: "{{ pve_token_id }}"
+        api_token_secret: "{{ pve_token_secret }}"
+        validate_certs: false
+        vmid: 102
+      register: container_status
+
+    - name: Print container status
+      ansible.builtin.debug:
+        var: container_status 

@@ -1,0 +1,9 @@
+# NOTE: This file should be encrypted with `ansible-vault encrypt` before use.
+# Example:
+#   ansible-vault encrypt group_vars/proxmox/vault.yml
+
+pve_host: pve-mini
+pve_token_id: ansible
+pve_token_secret: d2317b2d-91fe-45ee-89db-990cfb040132
+api_user: apiuser@pam
+proxmox_ssh_user: root

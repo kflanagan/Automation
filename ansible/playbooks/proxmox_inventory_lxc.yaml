@@ -1,0 +1,117 @@
+---
+- name: Build Proxmox LXC inventory
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    pve_host: pve-mini
+    pve_token_id: ansible
+    pve_token_secret: d2317b2d-91fe-45ee-89db-990cfb040132
+    api_host: pve-mini
+    api_user: apiuser@pam
+    proxmox_ssh_user: root
+  
+  #vars_files:
+  #  - ../group_vars/proxmox/vault.yml
+
+
+  tasks:
+    - name: Query Proxmox API for node LXC resources
+      ansible.builtin.uri:
+        url: "https://{{ api_host }}:8006/api2/json/nodes/{{ pve_host }}/lxc"
+        method: GET
+        headers:
+          Authorization: "PVEAPIToken={{ api_user }}!{{ pve_token_id }}={{ pve_token_secret }}"
+        validate_certs: false
+      register: node_lxc_query
+
+    # - name: Query Proxmox API for cluster LXC resources fallback
+    #   ansible.builtin.uri:
+    #     url: "https://{{ api_host }}:8006/api2/json/cluster/resources?type=lxc"
+    #     method: GET
+    #     headers:
+    #       Authorization: "PVEAPIToken={{ api_user }}!{{ pve_token_id }}={{ pve_token_secret }}"
+    #     validate_certs: false
+    #   register: cluster_lxc_query
+
+    - name: Ensure at least one LXC API response contains data
+      assert:
+        that:
+          - node_lxc_query.json is defined
+          - node_lxc_query.json.data is defined or cluster_lxc_query.json.data is defined
+        fail_msg: "Neither node nor cluster Proxmox API response contained LXC data."
+
+    - name: Set raw resources from API
+      set_fact:
+        raw_source: >-
+          {{ 'node' if node_lxc_query.json.data | default([]) | length > 0 else 'cluster' }}
+        raw_resources: >-
+          {{ node_lxc_query.json.data | default([])
+             if node_lxc_query.json.data | default([]) | length > 0
+             else cluster_lxc_query.json.data | default([]) }}
+
+    - name: Debug raw resource count
+      ansible.builtin.debug:
+        msg: >-
+          raw_resources contains {{ raw_resources | length }} items
+          (source={{ raw_source }}, node={{ node_lxc_query.json.data | default([]) | length }}, cluster={{ cluster_lxc_query.json.data | default([]) | length }})
+
+    - name: Initialize LXC list
+      set_fact:
+        lxc_list: []
+
+    - name: Build LXC list from raw resources
+      set_fact:
+        lxc_list: "{{ lxc_list + [ item ] }}"
+      loop: "{{ raw_resources }}"
+      loop_control:
+        loop_var: item
+
+    - name: Debug selected resources list
+      ansible.builtin.debug:
+        msg: "Selected resources returned {{ lxc_list | length }} LXC items from {{ raw_source }} source"
+
+    - name: Debug first raw resource item
+      when: raw_resources | length > 0
+      ansible.builtin.debug:
+        var: raw_resources[0]
+
+    - name: Debug node API raw response
+      ansible.builtin.debug:
+        var: node_lxc_query.json
+
+    - name: Debug cluster API raw response
+      ansible.builtin.debug:
+        var: cluster_lxc_query.json
+
+    - name: Debug extracted LXC list
+      ansible.builtin.debug:
+        var: lxc_list
+
+    - name: Initialize normalized inventory
+      set_fact:
+        proxmox_lxc_inventory: []
+
+    - name: Build normalized inventory entries
+      loop: "{{ lxc_list }}"
+      loop_control:
+        loop_var: lxc
+      set_fact:
+        proxmox_lxc_inventory: >-
+          {{ proxmox_lxc_inventory + [ {
+            'vmid': (lxc.vmid | default(lxc['vmid'] | default(''))),
+            'type': (lxc.type | default(lxc['type'] | default(''))),
+            'status': (lxc.status | default(lxc['status'] | default(''))),
+            'node': (lxc.node | default(lxc['node'] | default(''))),
+            'name': (lxc.name | default(lxc['name'] | default(''))),
+            'ips': (lxc.ips | default(lxc['ips'] | default([])))
+          } ] }}
+
+    - name: Convert inventory to JSON string
+      set_fact:
+        proxmox_lxc_inventory: "{{ proxmox_lxc_inventory | to_nice_json }}"
+
+    - name: Write inventory JSON to controller
+      copy:
+        content: "{{ proxmox_lxc_inventory }}"
+        dest: /tmp/proxmox_lxc_inventory.json

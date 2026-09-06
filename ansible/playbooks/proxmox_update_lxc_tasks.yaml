@@ -1,0 +1,41 @@
+---
+- name: Read /etc/os-release from container
+  ansible.builtin.shell: |
+    ssh {{ proxmox_ssh_opts }} {{ proxmox_ssh_user }}@{{ pve_host }} "pct exec {{ vmid }} -- sh -c 'cat /etc/os-release'"
+  register: os_release
+  failed_when: false
+
+- name: Decide package manager
+  set_fact:
+    pkg_mgr: >-
+      {% set out = (os_release.stdout | default('')) | lower %}
+      {% if 'debian' in out or 'ubuntu' in out or 'id_like=debian' in out %}apt
+      {% elif 'fedora' in out or 'rhel' in out or 'centos' in out %}dnf
+      {% elif 'arch' in out %}pacman
+      {% else %}apt
+      {% endif %}
+
+- name: Choose update command
+  set_fact:
+    update_cmd: >-
+      {% if pkg_mgr == 'apt' %}apt-get update && apt-get -y upgrade
+      {% elif pkg_mgr == 'dnf' %}dnf -y upgrade
+      {% elif pkg_mgr == 'pacman' %}pacman -Syu --noconfirm
+      {% else %}apt-get update && apt-get -y upgrade
+      {% endif %}
+
+- name: Show planned update (dry run)
+  ansible.builtin.debug:
+    msg: "VM {{ vmid }} pkg_mgr={{ pkg_mgr }} plan: pct exec {{ vmid }} -- {{ update_cmd }}"
+  when: dry_run | bool
+
+- name: Run package update inside LXC (via pct exec on Proxmox host)
+  ansible.builtin.shell: |
+    ssh {{ proxmox_ssh_opts }} {{ proxmox_ssh_user }}@{{ pve_host }} "pct exec {{ vmid }} -- sh -c '{{ update_cmd }}'"
+  when: not dry_run | bool
+  register: update_result
+
+- name: Record update result
+  ansible.builtin.debug:
+    var: update_result
+  when: not dry_run | bool

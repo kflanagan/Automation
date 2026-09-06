@@ -7,21 +7,21 @@
 HOST_SHORTNAME=$(hostname -s)
 
 
-#if the host is pve-mini use this value 
+#if the host is pve-mini use this value
 if [ "$HOST_SHORTNAME" == "pve-mini" ]; then
     OUTPUT_FILE="/data/code/Documents/proxmox-${HOST_SHORTNAME}.md"
-
-#Another if for the host containing pavilion
+    
+    #Another if for the host containing pavilion
     if [ -d "/data/code/Documents" ]; then
         OUTPUT_FILE="/data/code/Documents/proxmox-${HOST_SHORTNAME}.md"
     else
         #mount -a if not mounted
-       # mount -a
+        # mount -a
         #check again if /data/code/Documents exists
         if [ ! -d "/data/code/Documents" ]; then
-        echo "Error: /data/code/Documents directory does not exist. Please ensure the filesystem is mounted."
-        exit 1
-    fi
+            echo "Error: /data/code/Documents directory does not exist. Please ensure the filesystem is mounted."
+            exit 1
+        fi
     fi
 fi
 
@@ -33,22 +33,37 @@ decode_url() {
 # Function to get VM details
 get_vm_details() {
     local vmid=$1
+    local status
+    local ip_addresses
+    status=$(qm status "$vmid" | tr -d '\n')
+    
     echo "## VM ID: $vmid"
     echo ""
+    echo "### Status:"
+    printf ' `%s`\n' "$status"
+    echo ""
     echo "### Configuration:"
-    qm config $vmid | while IFS=': ' read -r key value; do
+    echo "| Setting | Value |"
+    echo "| --- | --- |"
+    qm config "$vmid" | while IFS=':' read -r key value; do
+        key=$(echo "$key" | sed 's/[[:space:]]*$//')
+        value=$(echo "$value" | sed 's/^[[:space:]]*//')
         if [[ "$key" == "description" ]]; then
             value=$(decode_url "$value")
         fi
-        echo "- **$key**: $value"
+        value=${value//|/\\|}
+        value=${value//$'\n'/<br>}
+        echo "| **$key** | $value |"
     done
     echo ""
-    echo "### Status:"
-    qm status $vmid
-    echo ""
     echo "### IP Addresses:"
-    if qm status $vmid | grep -q running; then
-        qm guest exec $vmid "ip addr show" 2>/dev/null | grep "inet " | grep -v "127.0.0.1" | awk '{print "- " $2}' | grep 192|| echo "- Unable to retrieve IP addresses (guest agent may not be installed)"
+    if [[ "$status" == *running* ]]; then
+        ip_addresses=$(qm guest exec "$vmid" "ip addr show" 2>/dev/null | grep "inet " | grep -v "127.0.0.1" | awk '{print "- `" $2 "`"}')
+        if [[ -n "$ip_addresses" ]]; then
+            printf '%s\n' "$ip_addresses"
+        else
+            echo "- Unable to retrieve IP addresses (guest agent may not be installed)"
+        fi
     else
         echo "- VM not running"
     fi
@@ -58,14 +73,27 @@ get_vm_details() {
 # Function to get Container details
 get_ct_details() {
     local ctid=$1
+    local status
+    local ip_addresses
+    status=$(pct status "$ctid" | tr -d '\n')
+    
     echo "## Container ID: $ctid"
     echo ""
+    echo "### Status:"
+    printf '`%s`\n' "$status"
+    echo ""
     echo "### Configuration:"
-    pct config $ctid | while IFS=': ' read -r key value; do
+    echo "| Setting | Value |"
+    echo "| --- | --- |"
+    pct config "$ctid" | while IFS=':' read -r key value; do
+        key=$(echo "$key" | sed 's/[[:space:]]*$//')
+        value=$(echo "$value" | sed 's/^[[:space:]]*//')
         if [[ "$key" == "description" ]]; then
             value=$(decode_url "$value")
         fi
-        echo "- **$key**: $value"
+        value=${value//|/\\|}
+        value=${value//$'\n'/<br>}
+        echo "| **$key** | $value |"
     done
     echo ""
     echo "### Resources:"
@@ -82,21 +110,25 @@ get_ct_details() {
     else
         privileged_mode="Privileged"
     fi
-    echo "- **Memory**: ${memory}MB"
-    echo "- **Swap**: ${swap}MB"
-    echo "- **Disk (rootfs)**: $rootfs"
-    echo "- **Disk Size (rootfs)**: $rootfssize"
-    echo "- **Disk Free percentage (rootfs)**: $diskfree percent"
-    echo "- **Startup**: $startup"
-    echo "- **Privilege Mode**: $privileged_mode"
-    echo "- **Uptime**: $uptime"
-    echo ""
-    echo "### Status:"
-    pct status $ctid
+    echo "| Resource | Value |"
+    echo "| --- | --- |"
+    echo "| Memory | ${memory}MB |"
+    echo "| Swap | ${swap}MB |"
+    echo "| Disk (rootfs) | $rootfs |"
+    echo "| Disk Size (rootfs) | $rootfssize |"
+    echo "| Disk Free percentage (rootfs) | $diskfree percent |"
+    echo "| Startup | $startup |"
+    echo "| Privilege Mode | $privileged_mode |"
+    echo "| Uptime | $uptime |"
     echo ""
     echo "### IP Addresses:"
-    if pct status $ctid | grep -q running; then
-        pct exec $ctid ip addr show 2>/dev/null | grep "inet " | grep -v "127.0.0.1" | awk '{print "- " $2}' | grep 192 || echo "- Unable to retrieve IP addresses"
+    if [[ "$status" == *running* ]]; then
+        ip_addresses=$(pct exec "$ctid" ip addr show 2>/dev/null | grep "inet " | grep -v "127.0.0.1" | awk '{print "- `" $2 "`"}')
+        if [[ -n "$ip_addresses" ]]; then
+            printf '%s\n' "$ip_addresses"
+        else
+            echo "- Unable to retrieve IP addresses"
+        fi
     else
         echo "- Container not running"
     fi
@@ -106,7 +138,7 @@ get_ct_details() {
 # Start documentation
 {
     echo "# Proxmox Configuration Documentation"
-    echo "Generated on $(date)"
+    echo "> Generated on $(date)"
     echo ""
     
     echo "## Virtual Machines"
@@ -123,25 +155,20 @@ get_ct_details() {
     echo "## Containers"
     echo ""
     
-    # # Get list of containers
-    # pct list | tail -n +2 | while read -r line; do
-    #     ctid=$(echo $line | awk '{print $1}')
-    #     if [[ -n "$ctid" && "$ctid" != "VMID" ]]; then
-    #         get_ct_details $ctid
-    #     fi
-    # done
     
-# Get list of containers
-while IFS= read -r ctid; do
-    if [[ -n "$ctid" && "$ctid" != "VMID" ]]; then
-        get_ct_details "$ctid"
-    fi
-done < <(pct list | tail -n +2 | awk '{print $1}')
-
+    # Get list of containers
+    while IFS= read -r ctid; do
+        if [[ -n "$ctid" && "$ctid" != "VMID" ]]; then
+            get_ct_details "$ctid"
+        fi
+    done < <(pct list | tail -n +2 | awk '{print $1}')
+    
     echo "## Host Disk Space Summary"
     echo ""
-    df -h | while read -r line; do
-        echo "- $line"
+    echo "| Filesystem | Size | Used | Available | Use | Mounted on |"
+    echo "| --- | ---: | ---: | ---: | ---: | --- |"
+    df -h | tail -n +2 | while read -r filesystem size used available percent mountpoint; do
+        echo "| $filesystem | $size | $used | $available | $percent | $mountpoint |"
     done
     echo ""
     

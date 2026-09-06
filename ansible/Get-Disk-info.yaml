@@ -1,28 +1,35 @@
 ---
 - name: Get /var size on all fedora hosts
-  hosts: fedora
+  hosts: containers
   gather_facts: false
 
   tasks:
-    - name: Fetching /var size on hosts
-      ansible.builtin.command: du -s /var
-      register: du_var
+    - name: Fetching /var size and used space on hosts
+      ansible.builtin.command: df -B1 /var
+      register: df_var
       become: true
       changed_when: false
 
     # This is absolutely needed as registers don't survive current play
     # See next play on localhost only
-    - name: Store actual size for hosts in a fact
-      vars:
-        size_regex: >-
-          ^(\d+)\s*/var
-        replace: >-
-          \g<1>
+    - name: Store actual size and usage for hosts in a fact
       ansible.builtin.set_fact:
-        var_size_bytes: "{{ du_var.stdout | regex_replace(size_regex, replace) }}"
+        var_size_bytes: "{{ df_var.stdout_lines[1].split()[1] | int }}"
+        var_used_bytes: "{{ df_var.stdout_lines[1].split()[2] | int }}"
+        var_free_bytes: "{{ (df_var.stdout_lines[1].split()[1] | int) - (df_var.stdout_lines[1].split()[2] | int) }}"
 
     # As a first example, demonstrate we can simply display sizes
     # with the natural play host loop
     - name: Show human readable size of /var on each host
       ansible.builtin.debug:
         msg: "/var size is: {{ var_size_bytes | int | human_readable }}"
+    - name: Show human readable used space on /var
+      ansible.builtin.debug:
+        msg: "/var used space is: {{ var_used_bytes | int | human_readable }}"
+    - name: Show human readable free space on /var
+      ansible.builtin.debug:
+        msg: "/var free space is: {{ var_free_bytes | int | human_readable }}"
+#    - name: Show raw info on /var
+#      ansible.builtin.debug:
+#        msg: "the raw info on /var is: {{ df_var.stdout }}"
+      

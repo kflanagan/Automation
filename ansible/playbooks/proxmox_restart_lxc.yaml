@@ -1,0 +1,38 @@
+---
+- name: Restart Proxmox LXC containers
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - ../group_vars/proxmox/vault.yml
+
+  vars:
+    target_vms: []
+
+  tasks:
+    - name: Ensure target list provided or build from inventory
+      when: target_vms | length == 0
+      block:
+        - name: Include inventory playbook to build inventory
+          import_playbook: proxmox_inventory_lxc.yaml
+
+        - name: Read generated inventory
+          slurp:
+            src: ./proxmox_lxc_inventory.json
+          register: inv_raw
+
+        - name: Set target_vms from inventory
+          set_fact:
+            target_vms: "{{ (inv_raw.content | b64decode) | from_json | map(attribute='vmid') | list }}"
+
+    - name: Restart each target LXC
+      loop: "{{ target_vms }}"
+      community.proxmox.proxmox:
+        node: "{{ pve_host }}"
+        api_host: "{{ pve_host }}"
+        api_user: "{{ api_user }}"
+        api_token_id: "{{ pve_token_id }}"
+        api_token_secret: "{{ pve_token_secret }}"
+        validate_certs: false
+        vmid: "{{ item }}"
+        state: restarted

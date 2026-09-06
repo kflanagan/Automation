@@ -1,0 +1,30 @@
+---
+- name: Update packages inside Proxmox LXC containers
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - ../group_vars/proxmox/vault.yml
+
+  vars:
+    target_vms: []
+    dry_run: true
+    proxmox_ssh_user: root
+    proxmox_ssh_opts: "-o StrictHostKeyChecking=no"
+
+  tasks:
+    - name: Build inventory if no targets provided
+      when: target_vms | length == 0
+      block:
+        - import_playbook: proxmox_inventory_lxc.yaml
+        - slurp:
+            src: ./proxmox_lxc_inventory.json
+          register: inv_raw
+        - set_fact:
+            target_vms: "{{ (inv_raw.content | b64decode) | from_json | map(attribute='vmid') | list }}"
+
+    - name: Detect package manager inside LXC and run updates
+      include_tasks: proxmox_update_lxc_tasks.yaml
+      loop: "{{ target_vms }}"
+      loop_control:
+        loop_var: vmid
